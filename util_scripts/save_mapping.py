@@ -203,6 +203,13 @@ PRIORITY_CATEGORIES = {
     "gnustep-libs": 80,
 }
 
+# Manual overrides for package mappings that would otherwise be incorrect
+MANUAL_PACKAGE_OVERRIDES = {
+    "SDL": "media-libs/libsdl",
+    "fmt": "dev-libs/libfmt",
+    "httpd": "www-servers/apache",
+}
+
 DEFAULT_PRIORITY = 30  # Default priority for unlisted categories
 
 
@@ -228,6 +235,17 @@ def process_chunk(data):
             "verified": False,
             "all_matches": [],  # Store all possible matches
         }
+
+        # Check for manual override first
+        if package_name in MANUAL_PACKAGE_OVERRIDES:
+            match_result = {
+                "gentoo_match": MANUAL_PACKAGE_OVERRIDES[package_name],
+                "confidence": 1.0,  # Override means high confidence
+                "verified": True,
+                "all_matches": [MANUAL_PACKAGE_OVERRIDES[package_name]],
+            }
+            results[package_name] = match_result
+            continue
 
         # Only look for exact name matches - no normalization
         if package_name in all_gentoo_packages:
