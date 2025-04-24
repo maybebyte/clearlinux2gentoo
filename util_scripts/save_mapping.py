@@ -3,8 +3,8 @@ Package Mapper - Maps Clear Linux packages to Gentoo packages using exact name m
 """
 
 import json
-from concurrent.futures import ProcessPoolExecutor
-import tqdm
+import os
+import concurrent.futures
 
 
 def process_chunk(data):
@@ -286,7 +286,8 @@ def main():
     print(f"Found {len(all_gentoo_packages)} unique Gentoo package names")
 
     # Prepare for parallel processing
-    cpu_cores = 2  # Adjust based on your system
+    cpu_count = os.cpu_count()
+    cpu_cores = max(1, int((cpu_count or 1) * 0.75))
     chunk_size = len(clear_linux_packages) // cpu_cores + 1
 
     # Split the work into chunks
@@ -299,14 +300,33 @@ def main():
 
     # Process chunks in parallel
     mapping_results = {}
-    with ProcessPoolExecutor(max_workers=cpu_cores) as executor:
-        # Use tqdm for a progress bar
-        for result in tqdm.tqdm(
-            executor.map(process_chunk, chunks),
-            total=len(chunks),
-            desc="Matching packages",
-        ):
+    with concurrent.futures.ProcessPoolExecutor(
+        max_workers=cpu_cores
+    ) as executor:
+        # Submit all tasks
+        future_to_chunk = {
+            executor.submit(process_chunk, chunk): i
+            for i, chunk in enumerate(chunks)
+        }
+
+        # Process as they complete
+        print(f"Processing {len(chunks)} chunks...")
+        completed = 0
+        total = len(chunks)
+
+        for future in concurrent.futures.as_completed(future_to_chunk):
+            result = future.result()
             mapping_results.update(result)
+
+            # Update progress
+            completed += 1
+            percent = (completed / total) * 100
+            print(
+                f"\rProgress: {completed}/{total} chunks ({percent:.1f}%)",
+                end="",
+            )
+
+        print()
 
     # Save the results
     output_file = "data/package_mapping_exact.json"
