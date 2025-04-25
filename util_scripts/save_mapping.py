@@ -126,11 +126,11 @@ def process_package_mapping(
     """
 
     def find_matching_categories(pkg_name: str) -> list:
-        return [
-            category
-            for category, pkgs in gentoo_category_to_pkgs.items()
-            if category not in NON_OPTIMIZABLE_CATEGORIES and pkg_name in pkgs
-        ]
+        matching_categories = []
+        for category, pkgs in gentoo_category_to_pkgs.items():
+            if category not in NON_OPTIMIZABLE_CATEGORIES and pkg_name in pkgs:
+                matching_categories.append(category)
+        return matching_categories
 
     # XXX: will fix with a proper category prioritization system later
     def determine_best_category(categories: list) -> str | None:
