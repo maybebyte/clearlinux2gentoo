@@ -9,6 +9,9 @@ CLEARLINUX_PKG_FILE = "data/clearlinux_pkgs.txt"
 GENTOO_PKG_FILE = "data/gentoo_pkgs.txt"
 OUTPUT_FILE = "data/pkg_mapping.json"
 
+# TODO: Handle cases where package names differ slightly (uppercase vs
+#       lowercase is one example)
+
 # Categories that don't benefit from compile-time optimizations
 NON_OPTIMIZABLE_CATEGORIES = {
     "acct-group",
