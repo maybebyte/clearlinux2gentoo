@@ -124,6 +124,22 @@ def process_package_mapping(
     Returns:
         dict: Mapping result for the package.
     """
+
+    def find_matching_categories(pkg_name: str) -> list:
+        return [
+            category
+            for category, pkgs in gentoo_category_to_pkgs.items()
+            if category not in NON_OPTIMIZABLE_CATEGORIES and pkg_name in pkgs
+        ]
+
+    # XXX: will fix with a proper category prioritization system later
+    def determine_best_category(categories: list) -> str | None:
+        return sorted(categories)[0] if categories else None
+
+    override_match = get_manual_override_for_package(pkg_name)
+    if override_match:
+        return override_match
+
     match_result = {
         "gentoo_match": None,
         "confidence": 0,
@@ -131,29 +147,23 @@ def process_package_mapping(
         "all_matches": [],
     }
 
-    override_match = get_manual_override_for_package(pkg_name)
-    if override_match:
-        return override_match
-
     if pkg_name in all_gentoo_pkgs:
-        matching_categories = []
-        for category, pkgs in gentoo_category_to_pkgs.items():
-            if category in NON_OPTIMIZABLE_CATEGORIES:
-                continue
-
-            if pkg_name in pkgs:
-                matching_categories.append(category)
-                match_result["all_matches"].append(f"{category}/{pkg_name}")
+        matching_categories = find_matching_categories(pkg_name)
+        match_result["all_matches"] = [
+            f"{category}/{pkg_name}" for category in matching_categories
+        ]
 
         if matching_categories:
-            # XXX: will fix with a proper category prioritization system later
-            best_category = sorted(matching_categories)[0]
-            match_result = {
-                "gentoo_match": f"{best_category}/{pkg_name}",
-                "confidence": 1.0 if len(matching_categories) == 1 else 0.8,
-                "verified": True,
-                "all_matches": match_result["all_matches"],
-            }
+            best_category = determine_best_category(matching_categories)
+            match_result.update(
+                {
+                    "gentoo_match": f"{best_category}/{pkg_name}",
+                    "confidence": (
+                        1.0 if len(matching_categories) == 1 else 0.8
+                    ),
+                    "verified": True,
+                }
+            )
 
     return match_result
 
