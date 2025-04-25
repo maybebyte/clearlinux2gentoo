@@ -7,7 +7,7 @@ from collections import defaultdict
 
 CLEARLINUX_PKG_FILE = "data/clearlinux_pkgs.txt"
 GENTOO_PKG_FILE = "data/gentoo_pkgs.txt"
-OUTPUT_FILE = "data/package_mapping_exact.json"
+OUTPUT_FILE = "data/pkg_mapping.json"
 
 # Categories that don't benefit from compile-time optimizations
 NON_OPTIMIZABLE_CATEGORIES = {
@@ -27,14 +27,14 @@ NON_OPTIMIZABLE_CATEGORIES = {
 }
 
 # Manual overrides for package mappings that would otherwise be incorrect
-MANUAL_PACKAGE_OVERRIDES = {
+MANUAL_PKG_OVERRIDES = {
     "SDL": "media-libs/libsdl",
     "fmt": "dev-libs/libfmt",
     "httpd": "www-servers/apache",
 }
 
 
-def get_manual_override_for_package(package_name: str) -> dict | None:
+def get_manual_override_for_pkg(pkg_name: str) -> dict | None:
     """
     Determines if a package has a manual override. Returns the match details.
 
@@ -45,13 +45,13 @@ def get_manual_override_for_package(package_name: str) -> dict | None:
         dict | None: Either a dict with match details if an override exists,
                      or None if no override is found.
     """
-    overrides = MANUAL_PACKAGE_OVERRIDES
+    overrides = MANUAL_PKG_OVERRIDES
 
-    if package_name in overrides:
+    if pkg_name in overrides:
         return {
-            "gentoo_match": overrides[package_name],
+            "gentoo_match": overrides[pkg_name],
             "confidence": 1.0,
-            "all_matches": [overrides[package_name]],
+            "all_matches": [overrides[pkg_name]],
         }
     return None
 
@@ -101,13 +101,13 @@ def gentoo_dict_to_pkglist(category_to_pkgs: dict) -> set:
     Returns:
         set: A set of all unique package names.
     """
-    all_packages = set()
+    all_pkgs = set()
     for pkgs in category_to_pkgs.values():
-        all_packages.update(pkgs)
-    return all_packages
+        all_pkgs.update(pkgs)
+    return all_pkgs
 
 
-def process_package_mapping(
+def process_pkg_mapping(
     pkg_name: str,
     gentoo_category_to_pkgs: dict,
     all_gentoo_pkgs: set,
@@ -133,10 +133,10 @@ def process_package_mapping(
         return matching_categories
 
     # XXX: will fix with a proper category prioritization system later
-    def determine_best_category(categories: list) -> str | None:
+    def determine_best_pkg_category(categories: list) -> str | None:
         return sorted(categories)[0] if categories else None
 
-    override_match = get_manual_override_for_package(pkg_name)
+    override_match = get_manual_override_for_pkg(pkg_name)
     if override_match:
         return override_match
 
@@ -153,7 +153,7 @@ def process_package_mapping(
         ]
 
         if matching_categories:
-            best_category = determine_best_category(matching_categories)
+            best_category = determine_best_pkg_category(matching_categories)
             confidence = (
                 0.8
                 if len(matching_categories) == 1
@@ -176,7 +176,7 @@ def main():
 
     mapping_results = {}
     for pkg_name in clearlinux_pkgs:
-        match_result = process_package_mapping(
+        match_result = process_pkg_mapping(
             pkg_name, gentoo_category_to_pkgs, all_gentoo_pkgs
         )
         mapping_results[pkg_name] = match_result
