@@ -155,14 +155,15 @@ def process_package_mapping(
 
         if matching_categories:
             best_category = determine_best_category(matching_categories)
+            confidence = (
+                0.8
+                if len(matching_categories) == 1
+                else round(1 / len(matching_categories), 3)
+            )
             match_result.update(
                 {
                     "gentoo_match": f"{best_category}/{pkg_name}",
-                    "confidence": (
-                        0.8
-                        if len(matching_categories) == 1
-                        else round(1 / len(matching_categories), 3)
-                    ),
+                    "confidence": confidence,
                     "verified": False,
                 }
             )
