@@ -5,6 +5,9 @@ Package Mapper - Maps Clear Linux packages to Gentoo packages using exact name m
 import json
 from collections import defaultdict
 
+CLEARLINUX_PKG_FILE = "data/clearlinux_pkgs.txt"
+GENTOO_PKG_FILE = "data/gentoo_pkgs.txt"
+
 # Categories that don't benefit from compile-time optimizations
 NON_OPTIMIZABLE_CATEGORIES = {
     "acct-group",
@@ -53,18 +56,46 @@ def get_manual_override_for_package(package_name: str) -> dict | None:
     return None
 
 
-def main():
-    gentoo_category_to_pkgs = defaultdict(set)
-    all_gentoo_pkgs = set()
+def gentoo_pkgfile_to_dict(file_path: str) -> dict:
+    """
+    Loads Gentoo packages from a file and organizes them by category.
 
-    with open("data/gentoo_pkgs.txt", "r", encoding="utf-8") as f:
+    Args:
+        file_path (str): Path to the Gentoo package file.
+
+    Returns:
+        dict: A dictionary mapping categories to sets of package names.
+    """
+    gentoo_category_to_pkgs = defaultdict(set)
+    with open(file_path, "r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             category, pkgs = line.split("/", 1)
             gentoo_category_to_pkgs[category].add(pkgs)
-            all_gentoo_pkgs.update(pkgs)
+    return gentoo_category_to_pkgs
 
-    with open("data/clearlinux_pkgs.txt", "r", encoding="utf-8") as f:
+
+def extract_pkgs_from_dict(category_to_pkgs: dict) -> set:
+    """
+    Extracts all unique package names from a dictionary mapping categories to package sets.
+
+    Args:
+        category_to_pkgs (dict): A dictionary where keys are categories and values are sets of package names.
+
+    Returns:
+        set: A set of all unique package names.
+    """
+    all_packages = set()
+    for pkgs in category_to_pkgs.values():
+        all_packages.update(pkgs)
+    return all_packages
+
+
+def main():
+    gentoo_category_to_pkgs = gentoo_pkgfile_to_dict(GENTOO_PKG_FILE)
+    all_gentoo_pkgs = extract_pkgs_from_dict(gentoo_category_to_pkgs)
+
+    with open(CLEARLINUX_PKG_FILE, "r", encoding="utf-8") as f:
         clearlinux_pkgs = {line.strip() for line in f}
 
     mapping_results = {}
