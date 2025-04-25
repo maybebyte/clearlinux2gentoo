@@ -7,6 +7,7 @@ from collections import defaultdict
 
 CLEARLINUX_PKG_FILE = "data/clearlinux_pkgs.txt"
 GENTOO_PKG_FILE = "data/gentoo_pkgs.txt"
+OUTPUT_FILE = "data/package_mapping_exact.json"
 
 # Categories that don't benefit from compile-time optimizations
 NON_OPTIMIZABLE_CATEGORIES = {
@@ -50,7 +51,6 @@ def get_manual_override_for_package(package_name: str) -> dict | None:
         return {
             "gentoo_match": overrides[package_name],
             "confidence": 1.0,
-            "verified": True,
             "all_matches": [overrides[package_name]],
         }
     return None
@@ -143,7 +143,6 @@ def process_package_mapping(
     match_result = {
         "gentoo_match": None,
         "confidence": 0,
-        "verified": False,
         "all_matches": [],
     }
 
@@ -164,7 +163,6 @@ def process_package_mapping(
                 {
                     "gentoo_match": f"{best_category}/{pkg_name}",
                     "confidence": confidence,
-                    "verified": False,
                 }
             )
 
@@ -183,8 +181,7 @@ def main():
         )
         mapping_results[pkg_name] = match_result
 
-    output_file = "data/package_mapping_exact.json"
-    with open(output_file, "w", encoding="utf-8") as f:
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(mapping_results, f, indent=2, sort_keys=True)
 
 
