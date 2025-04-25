@@ -29,19 +29,18 @@ MANUAL_PACKAGE_OVERRIDES = {
 }
 
 
-def get_manual_override_match(package_name, overrides=None):
+def get_manual_override_for_package(package_name: str) -> dict | None:
     """
-    Check if a package has a manual override and return the match result if it does.
+    Determines if a package has a manual override. Returns the match details.
 
     Args:
-        package_name: The package name to check
-        overrides: Dictionary of manual overrides (defaults to MANUAL_PACKAGE_OVERRIDES)
+        package_name (str): The name of the package to check.
 
     Returns:
-        Match result dictionary if override exists, None otherwise
+        dict | None: Either a dict with match details if an override exists,
+                     or None if no override is found.
     """
-    if overrides is None:
-        overrides = MANUAL_PACKAGE_OVERRIDES
+    overrides = MANUAL_PACKAGE_OVERRIDES
 
     if package_name in overrides:
         return {
@@ -84,7 +83,7 @@ def main():
         }
 
         # Check for manual override first
-        override_match = get_manual_override_match(package_name)
+        override_match = get_manual_override_for_package(package_name)
         if override_match:
             mapping_results[package_name] = override_match
             continue
