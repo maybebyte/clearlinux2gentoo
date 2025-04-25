@@ -34,6 +34,30 @@ MANUAL_PACKAGE_OVERRIDES = {
 DEFAULT_PRIORITY = 30  # Default priority for unlisted categories
 
 
+def get_manual_override_match(package_name, overrides=None):
+    """
+    Check if a package has a manual override and return the match result if it does.
+
+    Args:
+        package_name: The package name to check
+        overrides: Dictionary of manual overrides (defaults to MANUAL_PACKAGE_OVERRIDES)
+
+    Returns:
+        Match result dictionary if override exists, None otherwise
+    """
+    if overrides is None:
+        overrides = MANUAL_PACKAGE_OVERRIDES
+
+    if package_name in overrides:
+        return {
+            "gentoo_match": overrides[package_name],
+            "confidence": 1.0,
+            "verified": True,
+            "all_matches": [overrides[package_name]],
+        }
+    return None
+
+
 def process_chunk(data):
     """
     Process a chunk of Clear Linux packages and find matching Gentoo packages.
@@ -58,14 +82,9 @@ def process_chunk(data):
         }
 
         # Check for manual override first
-        if package_name in MANUAL_PACKAGE_OVERRIDES:
-            match_result = {
-                "gentoo_match": MANUAL_PACKAGE_OVERRIDES[package_name],
-                "confidence": 1.0,  # Override means high confidence
-                "verified": True,
-                "all_matches": [MANUAL_PACKAGE_OVERRIDES[package_name]],
-            }
-            results[package_name] = match_result
+        override_match = get_manual_override_match(package_name)
+        if override_match:
+            results[package_name] = override_match
             continue
 
         # Case-insensitive lookup
@@ -129,7 +148,7 @@ def main():
     for category, packages in gentoo_packages.items():
         # Store lowercase versions for case-insensitive comparison
         gentoo_by_category[category] = set(pkg.lower() for pkg in packages)
-        
+
         # Map lowercase names to original case
         for pkg in packages:
             pkg_lower = pkg.lower()
