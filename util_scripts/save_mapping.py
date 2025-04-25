@@ -3,6 +3,7 @@ Package Mapper - Maps Clear Linux packages to Gentoo packages using exact name m
 """
 
 import json
+from collections import defaultdict
 
 # Categories that don't benefit from compile-time optimizations
 NON_OPTIMIZABLE_CATEGORIES = {
@@ -53,54 +54,44 @@ def get_manual_override_for_package(package_name: str) -> dict | None:
 
 
 def main():
-    # Load the package lists
-    with open("data/gentoo_packages.json", "r", encoding="utf-8") as f:
-        gentoo_packages = json.load(f)
+    gentoo_category_to_pkgs = defaultdict(set)
+    all_gentoo_pkgs = set()
 
-    with open("data/clearlinux_packages.json", "r", encoding="utf-8") as f:
-        clear_linux_packages = json.load(f)
+    with open("data/gentoo_pkgs.txt", "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            category, pkgs = line.split("/", 1)
+            gentoo_category_to_pkgs[category].add(pkgs)
+            all_gentoo_pkgs.update(pkgs)
 
-    # Organize Gentoo packages for efficient lookup
-    gentoo_by_category = {}
-    all_gentoo_packages = set()
+    with open("data/clearlinux_pkgs.txt", "r", encoding="utf-8") as f:
+        clearlinux_pkgs = {line.strip() for line in f}
 
-    # Build lookup structures - using exact names
-    for category, packages in gentoo_packages.items():
-        gentoo_by_category[category] = set(packages)
-        all_gentoo_packages.update(packages)
-
-    # Process all packages sequentially
     mapping_results = {}
 
-    # Process each Clear Linux package
-    for package_name in clear_linux_packages:
-        # Initialize with no match
+    for pkg_name in clearlinux_pkgs:
         match_result = {
             "gentoo_match": None,
             "confidence": 0,
             "verified": False,
-            "all_matches": [],  # Store all possible matches
+            "all_matches": [],
         }
 
-        # Check for manual override first
-        override_match = get_manual_override_for_package(package_name)
+        override_match = get_manual_override_for_package(pkg_name)
         if override_match:
-            mapping_results[package_name] = override_match
+            mapping_results[pkg_name] = override_match
             continue
 
-        # Exact matching lookup
-        if package_name in all_gentoo_packages:
-            # Find all categories where this package exists
+        if pkg_name in all_gentoo_pkgs:
             matching_categories = []
-            for category, packages in gentoo_by_category.items():
-                # Skip categories that don't benefit from optimization
+            for category, pkgs in gentoo_category_to_pkgs.items():
                 if category in NON_OPTIMIZABLE_CATEGORIES:
                     continue
 
-                if package_name in packages:
+                if pkg_name in pkgs:
                     matching_categories.append(category)
                     match_result["all_matches"].append(
-                        f"{category}/{package_name}"
+                        f"{category}/{pkg_name}"
                     )
 
             if matching_categories:
@@ -108,7 +99,7 @@ def main():
                 # XXX: not permanent! Just a temporary kludge for testing
                 best_category = sorted(matching_categories)[0]
                 match_result = {
-                    "gentoo_match": f"{best_category}/{package_name}",
+                    "gentoo_match": f"{best_category}/{pkg_name}",
                     "confidence": (
                         1.0 if len(matching_categories) == 1 else 0.8
                     ),
@@ -116,9 +107,8 @@ def main():
                     "all_matches": match_result["all_matches"],
                 }
 
-        mapping_results[package_name] = match_result
+        mapping_results[pkg_name] = match_result
 
-    # Save the results
     output_file = "data/package_mapping_exact.json"
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(mapping_results, f, indent=2, sort_keys=True)
