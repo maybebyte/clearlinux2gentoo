@@ -1,5 +1,5 @@
 """
-Package Mapper - Maps Clear Linux packages to Gentoo packages using exact name matching
+Package Mapper - Maps Clear Linux packages to Gentoo packages using case-insensitive name matching
 """
 
 import json
@@ -39,12 +39,12 @@ def process_chunk(data):
     Process a chunk of Clear Linux packages and find matching Gentoo packages.
 
     Args:
-        data: Tuple containing (clear_linux_packages, gentoo_by_category, all_gentoo_packages)
+        data: Tuple containing (clear_linux_packages, gentoo_by_category, all_gentoo_packages, case_mapping)
 
     Returns:
         Dictionary mapping Clear Linux packages to their Gentoo counterparts
     """
-    clear_linux_packages, gentoo_by_category, all_gentoo_packages = data
+    clear_linux_packages, gentoo_by_category, all_gentoo_packages, case_mapping = data
     results = {}
 
     # Process each Clear Linux package
@@ -68,8 +68,9 @@ def process_chunk(data):
             results[package_name] = match_result
             continue
 
-        # Only look for exact name matches - no normalization
-        if package_name in all_gentoo_packages:
+        # Case-insensitive lookup
+        package_name_lower = package_name.lower()
+        if package_name_lower in all_gentoo_packages:
             # Find all categories where this package exists
             matching_categories = []
             for category, packages in gentoo_by_category.items():
@@ -77,18 +78,22 @@ def process_chunk(data):
                 if category in NON_OPTIMIZABLE_CATEGORIES:
                     continue
 
-                if package_name in packages:
+                if package_name_lower in packages:
                     matching_categories.append(category)
+                    # Use original case from Gentoo packages
+                    original_case = case_mapping.get((category, package_name_lower), package_name)
                     match_result["all_matches"].append(
-                        f"{category}/{package_name}"
+                        f"{category}/{original_case}"
                     )
 
             if matching_categories:
                 # Simply use the first category alphabetically as the best match
                 # XXX: not permanent! Just a temporary kludge for testing
                 best_category = sorted(matching_categories)[0]
+                # Get original case
+                original_case = case_mapping.get((best_category, package_name_lower), package_name)
                 match_result = {
-                    "gentoo_match": f"{best_category}/{package_name}",
+                    "gentoo_match": f"{best_category}/{original_case}",
                     "confidence": (
                         1.0 if len(matching_categories) == 1 else 0.8
                     ),
@@ -118,11 +123,18 @@ def main():
     # Organize Gentoo packages for efficient lookup
     gentoo_by_category = {}
     all_gentoo_packages = set()
+    case_mapping = {}  # Track original case of package names
 
     # Build lookup structures
     for category, packages in gentoo_packages.items():
-        gentoo_by_category[category] = set(packages)
-        all_gentoo_packages.update(packages)
+        # Store lowercase versions for case-insensitive comparison
+        gentoo_by_category[category] = set(pkg.lower() for pkg in packages)
+        
+        # Map lowercase names to original case
+        for pkg in packages:
+            pkg_lower = pkg.lower()
+            all_gentoo_packages.add(pkg_lower)
+            case_mapping[(category, pkg_lower)] = pkg
 
     print(f"Found {len(all_gentoo_packages)} unique Gentoo package names")
 
@@ -135,7 +147,7 @@ def main():
     chunks = []
     for i in range(0, len(clear_linux_packages), chunk_size):
         chunk = clear_linux_packages[i : i + chunk_size]
-        chunks.append((chunk, gentoo_by_category, all_gentoo_packages))
+        chunks.append((chunk, gentoo_by_category, all_gentoo_packages, case_mapping))
 
     print(f"Processing in {len(chunks)} chunks using {cpu_cores} cores...")
 
@@ -170,19 +182,19 @@ def main():
         print()
 
     # Save the results
-    output_file = "data/package_mapping_exact.json"
+    output_file = "data/package_mapping_case_insensitive.json"
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(mapping_results, f, indent=2, sort_keys=True)
 
     # Count matches for the summary
-    exact_matches = sum(
+    matches = sum(
         1 for v in mapping_results.values() if v["gentoo_match"]
     )
 
     print()
     print("Results:")
     print(
-        f"- Found {exact_matches} exact matches out of {len(clear_linux_packages)} Clear Linux packages"
+        f"- Found {matches} matches out of {len(clear_linux_packages)} Clear Linux packages"
     )
     print(f"- Mapping saved to {output_file}")
 
