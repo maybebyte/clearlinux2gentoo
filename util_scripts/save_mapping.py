@@ -183,6 +183,7 @@ def main():
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(mapping_results, f, indent=2, sort_keys=True)
+        f.write("\n")
 
 
 if __name__ == "__main__":
