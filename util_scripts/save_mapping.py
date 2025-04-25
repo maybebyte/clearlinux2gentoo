@@ -75,7 +75,21 @@ def gentoo_pkgfile_to_dict(file_path: str) -> dict:
     return gentoo_category_to_pkgs
 
 
-def extract_pkgs_from_dict(category_to_pkgs: dict) -> set:
+def clearlinux_pkgfile_to_set(file_path: str) -> set:
+    """
+    Loads Clear Linux package names from a file.
+
+    Args:
+        file_path (str): Path to the Clear Linux package file.
+
+    Returns:
+        set: A set of package names.
+    """
+    with open(file_path, "r", encoding="utf-8") as f:
+        return {line.strip() for line in f}
+
+
+def gentoo_dict_to_pkglist(category_to_pkgs: dict) -> set:
     """
     Extracts all unique package names from a dictionary mapping categories
     to package sets.
@@ -93,53 +107,67 @@ def extract_pkgs_from_dict(category_to_pkgs: dict) -> set:
     return all_packages
 
 
+def process_package_mapping(
+    pkg_name: str,
+    gentoo_category_to_pkgs: dict,
+    all_gentoo_pkgs: set,
+) -> dict:
+    """
+    Processes the mapping for a single package.
+
+    Args:
+        pkg_name (str): The package name to process.
+        all_gentoo_pkgs (set): Set of all Gentoo package names.
+        gentoo_category_to_pkgs (dict): Dictionary mapping Gentoo
+            categories to package sets.
+
+    Returns:
+        dict: Mapping result for the package.
+    """
+    match_result = {
+        "gentoo_match": None,
+        "confidence": 0,
+        "verified": False,
+        "all_matches": [],
+    }
+
+    override_match = get_manual_override_for_package(pkg_name)
+    if override_match:
+        return override_match
+
+    if pkg_name in all_gentoo_pkgs:
+        matching_categories = []
+        for category, pkgs in gentoo_category_to_pkgs.items():
+            if category in NON_OPTIMIZABLE_CATEGORIES:
+                continue
+
+            if pkg_name in pkgs:
+                matching_categories.append(category)
+                match_result["all_matches"].append(f"{category}/{pkg_name}")
+
+        if matching_categories:
+            # XXX: will fix with a proper category prioritization system later
+            best_category = sorted(matching_categories)[0]
+            match_result = {
+                "gentoo_match": f"{best_category}/{pkg_name}",
+                "confidence": 1.0 if len(matching_categories) == 1 else 0.8,
+                "verified": True,
+                "all_matches": match_result["all_matches"],
+            }
+
+    return match_result
+
+
 def main():
     gentoo_category_to_pkgs = gentoo_pkgfile_to_dict(GENTOO_PKG_FILE)
-    all_gentoo_pkgs = extract_pkgs_from_dict(gentoo_category_to_pkgs)
-
-    with open(CLEARLINUX_PKG_FILE, "r", encoding="utf-8") as f:
-        clearlinux_pkgs = {line.strip() for line in f}
+    all_gentoo_pkgs = gentoo_dict_to_pkglist(gentoo_category_to_pkgs)
+    clearlinux_pkgs = clearlinux_pkgfile_to_set(CLEARLINUX_PKG_FILE)
 
     mapping_results = {}
-
     for pkg_name in clearlinux_pkgs:
-        match_result = {
-            "gentoo_match": None,
-            "confidence": 0,
-            "verified": False,
-            "all_matches": [],
-        }
-
-        override_match = get_manual_override_for_package(pkg_name)
-        if override_match:
-            mapping_results[pkg_name] = override_match
-            continue
-
-        if pkg_name in all_gentoo_pkgs:
-            matching_categories = []
-            for category, pkgs in gentoo_category_to_pkgs.items():
-                if category in NON_OPTIMIZABLE_CATEGORIES:
-                    continue
-
-                if pkg_name in pkgs:
-                    matching_categories.append(category)
-                    match_result["all_matches"].append(
-                        f"{category}/{pkg_name}"
-                    )
-
-            if matching_categories:
-                # Simply use the first category alphabetically as the best match
-                # XXX: not permanent! Just a temporary kludge for testing
-                best_category = sorted(matching_categories)[0]
-                match_result = {
-                    "gentoo_match": f"{best_category}/{pkg_name}",
-                    "confidence": (
-                        1.0 if len(matching_categories) == 1 else 0.8
-                    ),
-                    "verified": True,
-                    "all_matches": match_result["all_matches"],
-                }
-
+        match_result = process_package_mapping(
+            pkg_name, gentoo_category_to_pkgs, all_gentoo_pkgs
+        )
         mapping_results[pkg_name] = match_result
 
     output_file = "data/package_mapping_exact.json"
