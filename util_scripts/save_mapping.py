@@ -1,11 +1,8 @@
 """
-Package Mapper - Maps Clear Linux packages to Gentoo packages using case-insensitive name matching
+Package Mapper - Maps Clear Linux packages to Gentoo packages using exact name matching
 """
 
 import json
-import os
-import concurrent.futures
-
 
 # Categories that don't benefit from compile-time optimizations
 NON_OPTIMIZABLE_CATEGORIES = {
@@ -30,8 +27,6 @@ MANUAL_PACKAGE_OVERRIDES = {
     "fmt": "dev-libs/libfmt",
     "httpd": "www-servers/apache",
 }
-
-DEFAULT_PRIORITY = 30  # Default priority for unlisted categories
 
 
 def get_manual_override_match(package_name, overrides=None):
@@ -58,73 +53,6 @@ def get_manual_override_match(package_name, overrides=None):
     return None
 
 
-def process_chunk(data):
-    """
-    Process a chunk of Clear Linux packages and find matching Gentoo packages.
-
-    Args:
-        data: Tuple containing (clear_linux_packages, gentoo_by_category, all_gentoo_packages, case_mapping)
-
-    Returns:
-        Dictionary mapping Clear Linux packages to their Gentoo counterparts
-    """
-    clear_linux_packages, gentoo_by_category, all_gentoo_packages, case_mapping = data
-    results = {}
-
-    # Process each Clear Linux package
-    for package_name in clear_linux_packages:
-        # Initialize with no match
-        match_result = {
-            "gentoo_match": None,
-            "confidence": 0,
-            "verified": False,
-            "all_matches": [],  # Store all possible matches
-        }
-
-        # Check for manual override first
-        override_match = get_manual_override_match(package_name)
-        if override_match:
-            results[package_name] = override_match
-            continue
-
-        # Case-insensitive lookup
-        package_name_lower = package_name.lower()
-        if package_name_lower in all_gentoo_packages:
-            # Find all categories where this package exists
-            matching_categories = []
-            for category, packages in gentoo_by_category.items():
-                # Skip categories that don't benefit from optimization
-                if category in NON_OPTIMIZABLE_CATEGORIES:
-                    continue
-
-                if package_name_lower in packages:
-                    matching_categories.append(category)
-                    # Use original case from Gentoo packages
-                    original_case = case_mapping.get((category, package_name_lower), package_name)
-                    match_result["all_matches"].append(
-                        f"{category}/{original_case}"
-                    )
-
-            if matching_categories:
-                # Simply use the first category alphabetically as the best match
-                # XXX: not permanent! Just a temporary kludge for testing
-                best_category = sorted(matching_categories)[0]
-                # Get original case
-                original_case = case_mapping.get((best_category, package_name_lower), package_name)
-                match_result = {
-                    "gentoo_match": f"{best_category}/{original_case}",
-                    "confidence": (
-                        1.0 if len(matching_categories) == 1 else 0.8
-                    ),
-                    "verified": True,
-                    "all_matches": match_result["all_matches"],
-                }
-
-        results[package_name] = match_result
-
-    return results
-
-
 def main():
     print("Loading package data...")
 
@@ -142,73 +70,72 @@ def main():
     # Organize Gentoo packages for efficient lookup
     gentoo_by_category = {}
     all_gentoo_packages = set()
-    case_mapping = {}  # Track original case of package names
 
-    # Build lookup structures
+    # Build lookup structures - using exact names
     for category, packages in gentoo_packages.items():
-        # Store lowercase versions for case-insensitive comparison
-        gentoo_by_category[category] = set(pkg.lower() for pkg in packages)
-
-        # Map lowercase names to original case
-        for pkg in packages:
-            pkg_lower = pkg.lower()
-            all_gentoo_packages.add(pkg_lower)
-            case_mapping[(category, pkg_lower)] = pkg
+        gentoo_by_category[category] = set(packages)
+        all_gentoo_packages.update(packages)
 
     print(f"Found {len(all_gentoo_packages)} unique Gentoo package names")
 
-    # Prepare for parallel processing
-    cpu_count = os.cpu_count()
-    cpu_cores = max(1, int((cpu_count or 1) * 0.75))
-    chunk_size = len(clear_linux_packages) // cpu_cores + 1
-
-    # Split the work into chunks
-    chunks = []
-    for i in range(0, len(clear_linux_packages), chunk_size):
-        chunk = clear_linux_packages[i : i + chunk_size]
-        chunks.append((chunk, gentoo_by_category, all_gentoo_packages, case_mapping))
-
-    print(f"Processing in {len(chunks)} chunks using {cpu_cores} cores...")
-
-    # Process chunks in parallel
+    # Process all packages sequentially
     mapping_results = {}
-    with concurrent.futures.ProcessPoolExecutor(
-        max_workers=cpu_cores
-    ) as executor:
-        # Submit all tasks
-        future_to_chunk = {
-            executor.submit(process_chunk, chunk): i
-            for i, chunk in enumerate(chunks)
+
+    print("Processing Clear Linux packages...")
+
+    # Process each Clear Linux package
+    for package_name in clear_linux_packages:
+        # Initialize with no match
+        match_result = {
+            "gentoo_match": None,
+            "confidence": 0,
+            "verified": False,
+            "all_matches": [],  # Store all possible matches
         }
 
-        # Process as they complete
-        print(f"Processing {len(chunks)} chunks...")
-        completed = 0
-        total = len(chunks)
+        # Check for manual override first
+        override_match = get_manual_override_match(package_name)
+        if override_match:
+            mapping_results[package_name] = override_match
+            continue
 
-        for future in concurrent.futures.as_completed(future_to_chunk):
-            result = future.result()
-            mapping_results.update(result)
+        # Exact matching lookup
+        if package_name in all_gentoo_packages:
+            # Find all categories where this package exists
+            matching_categories = []
+            for category, packages in gentoo_by_category.items():
+                # Skip categories that don't benefit from optimization
+                if category in NON_OPTIMIZABLE_CATEGORIES:
+                    continue
 
-            # Update progress
-            completed += 1
-            percent = (completed / total) * 100
-            print(
-                f"\rProgress: {completed}/{total} chunks ({percent:.1f}%)",
-                end="",
-            )
+                if package_name in packages:
+                    matching_categories.append(category)
+                    match_result["all_matches"].append(
+                        f"{category}/{package_name}"
+                    )
 
-        print()
+            if matching_categories:
+                # Simply use the first category alphabetically as the best match
+                # XXX: not permanent! Just a temporary kludge for testing
+                best_category = sorted(matching_categories)[0]
+                match_result = {
+                    "gentoo_match": f"{best_category}/{package_name}",
+                    "confidence": (
+                        1.0 if len(matching_categories) == 1 else 0.8
+                    ),
+                    "verified": True,
+                    "all_matches": match_result["all_matches"],
+                }
+
+        mapping_results[package_name] = match_result
 
     # Save the results
-    output_file = "data/package_mapping_case_insensitive.json"
+    output_file = "data/package_mapping_exact.json"
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(mapping_results, f, indent=2, sort_keys=True)
 
     # Count matches for the summary
-    matches = sum(
-        1 for v in mapping_results.values() if v["gentoo_match"]
-    )
+    matches = sum(1 for v in mapping_results.values() if v["gentoo_match"])
 
     print()
     print("Results:")
