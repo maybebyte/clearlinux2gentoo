@@ -77,10 +77,12 @@ def gentoo_pkgfile_to_dict(file_path: str) -> dict:
 
 def extract_pkgs_from_dict(category_to_pkgs: dict) -> set:
     """
-    Extracts all unique package names from a dictionary mapping categories to package sets.
+    Extracts all unique package names from a dictionary mapping categories
+    to package sets.
 
     Args:
-        category_to_pkgs (dict): A dictionary where keys are categories and values are sets of package names.
+        category_to_pkgs (dict): A dictionary where keys are categories and
+            values are sets of package names.
 
     Returns:
         set: A set of all unique package names.
