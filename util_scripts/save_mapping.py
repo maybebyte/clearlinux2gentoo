@@ -54,18 +54,12 @@ def get_manual_override_match(package_name, overrides=None):
 
 
 def main():
-    print("Loading package data...")
-
     # Load the package lists
     with open("data/gentoo_packages.json", "r", encoding="utf-8") as f:
         gentoo_packages = json.load(f)
 
     with open("data/clearlinux_packages.json", "r", encoding="utf-8") as f:
         clear_linux_packages = json.load(f)
-
-    print(
-        f"Loaded {len(clear_linux_packages)} Clear Linux packages and Gentoo packages from {len(gentoo_packages)} categories"
-    )
 
     # Organize Gentoo packages for efficient lookup
     gentoo_by_category = {}
@@ -76,12 +70,8 @@ def main():
         gentoo_by_category[category] = set(packages)
         all_gentoo_packages.update(packages)
 
-    print(f"Found {len(all_gentoo_packages)} unique Gentoo package names")
-
     # Process all packages sequentially
     mapping_results = {}
-
-    print("Processing Clear Linux packages...")
 
     # Process each Clear Linux package
     for package_name in clear_linux_packages:
@@ -133,16 +123,6 @@ def main():
     output_file = "data/package_mapping_exact.json"
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(mapping_results, f, indent=2, sort_keys=True)
-
-    # Count matches for the summary
-    matches = sum(1 for v in mapping_results.values() if v["gentoo_match"])
-
-    print()
-    print("Results:")
-    print(
-        f"- Found {matches} matches out of {len(clear_linux_packages)} Clear Linux packages"
-    )
-    print(f"- Mapping saved to {output_file}")
 
 
 if __name__ == "__main__":
