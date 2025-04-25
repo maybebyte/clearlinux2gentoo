@@ -161,7 +161,7 @@ def process_package_mapping(
                     "confidence": (
                         1.0 if len(matching_categories) == 1 else 0.8
                     ),
-                    "verified": True,
+                    "verified": False,
                 }
             )
 
