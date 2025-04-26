@@ -1,5 +1,6 @@
 """
-Package Mapper - Maps Clear Linux packages to Gentoo packages using exact name matching
+Package Mapper - Maps Clear Linux packages to Gentoo packages using exact
+name matching
 """
 
 import json
@@ -114,11 +115,13 @@ def find_matching_categories(
     pkg_name: str, gentoo_category_to_pkgs: dict
 ) -> list:
     """
-    Finds categories in Gentoo where the package exists, excluding non-optimizable categories.
+    Finds categories in Gentoo where the package exists, excluding
+    non-optimizable categories.
 
     Args:
         pkg_name (str): The package name to search for.
-        gentoo_category_to_pkgs (dict): Dictionary mapping Gentoo categories to package sets.
+        gentoo_category_to_pkgs (dict): Dictionary mapping Gentoo categories
+            to package sets.
 
     Returns:
         list: A list of matching categories.
@@ -133,7 +136,8 @@ def find_matching_categories(
 # XXX: will fix with a proper category prioritization system later
 def determine_best_pkg_category(categories: list) -> str | None:
     """
-    Determines the best category for a package from a list of matching categories.
+    Determines the best category for a package from a list of matching
+    categories.
 
     Args:
         categories (list): A list of matching categories.
@@ -146,7 +150,8 @@ def determine_best_pkg_category(categories: list) -> str | None:
 
 def calculate_confidence(matching_categories: list) -> float:
     """
-    Calculates the confidence level for a package match based on the number of matching categories.
+    Calculates the confidence level for a package match based on the number
+    of matching categories.
 
     Args:
         matching_categories (list): A list of matching categories.
