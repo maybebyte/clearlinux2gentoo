@@ -110,6 +110,57 @@ def gentoo_dict_to_pkglist(category_to_pkgs: dict) -> set:
     return all_pkgs
 
 
+def find_matching_categories(
+    pkg_name: str, gentoo_category_to_pkgs: dict
+) -> list:
+    """
+    Finds categories in Gentoo where the package exists, excluding non-optimizable categories.
+
+    Args:
+        pkg_name (str): The package name to search for.
+        gentoo_category_to_pkgs (dict): Dictionary mapping Gentoo categories to package sets.
+
+    Returns:
+        list: A list of matching categories.
+    """
+    return [
+        category
+        for category, pkgs in gentoo_category_to_pkgs.items()
+        if category not in NON_OPTIMIZABLE_CATEGORIES and pkg_name in pkgs
+    ]
+
+
+# XXX: will fix with a proper category prioritization system later
+def determine_best_pkg_category(categories: list) -> str | None:
+    """
+    Determines the best category for a package from a list of matching categories.
+
+    Args:
+        categories (list): A list of matching categories.
+
+    Returns:
+        str | None: The best category, or None if no categories are provided.
+    """
+    return sorted(categories)[0] if categories else None
+
+
+def calculate_confidence(matching_categories: list) -> float:
+    """
+    Calculates the confidence level for a package match based on the number of matching categories.
+
+    Args:
+        matching_categories (list): A list of matching categories.
+
+    Returns:
+        float: The confidence level.
+    """
+    return (
+        0.8
+        if len(matching_categories) == 1
+        else round(1 / len(matching_categories), 3)
+    )
+
+
 def process_pkg_mapping(
     pkg_name: str,
     gentoo_category_to_pkgs: dict,
@@ -128,17 +179,6 @@ def process_pkg_mapping(
         dict: Mapping result for the package.
     """
 
-    def find_matching_categories(pkg_name: str) -> list:
-        matching_categories = []
-        for category, pkgs in gentoo_category_to_pkgs.items():
-            if category not in NON_OPTIMIZABLE_CATEGORIES and pkg_name in pkgs:
-                matching_categories.append(category)
-        return matching_categories
-
-    # XXX: will fix with a proper category prioritization system later
-    def determine_best_pkg_category(categories: list) -> str | None:
-        return sorted(categories)[0] if categories else None
-
     override_match = get_manual_override_for_pkg(pkg_name)
     if override_match:
         return override_match
@@ -150,18 +190,16 @@ def process_pkg_mapping(
     }
 
     if pkg_name in all_gentoo_pkgs:
-        matching_categories = find_matching_categories(pkg_name)
+        matching_categories = find_matching_categories(
+            pkg_name, gentoo_category_to_pkgs
+        )
         match_result["all_matches"] = [
             f"{category}/{pkg_name}" for category in matching_categories
         ]
 
         if matching_categories:
             best_category = determine_best_pkg_category(matching_categories)
-            confidence = (
-                0.8
-                if len(matching_categories) == 1
-                else round(1 / len(matching_categories), 3)
-            )
+            confidence = calculate_confidence(matching_categories)
             match_result.update(
                 {
                     "gentoo_match": f"{best_category}/{pkg_name}",
