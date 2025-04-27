@@ -35,15 +35,18 @@ MANUAL_PKG_OVERRIDES = {
     "httpd": "www-servers/apache",
 }
 
-PREFIX_TO_CATEGORY = {
-    "golang-": "dev-go",
-    "jdk-": "dev-java",
-    "mvn-": "dev-java",
-    "perl-": "dev-perl",
-    "php-": "dev-php",
-    "pypi-": "dev-python",
-    "python-": "dev-python",
-    "rubygem-": "dev-ruby",
+PREFIX_MAPPINGS = {
+    # without transforms
+    "golang-": {"category": "dev-go", "transform": None},
+    "jdk-": {"category": "dev-java", "transform": None},
+    "mvn-": {"category": "dev-java", "transform": None},
+    "perl-": {"category": "dev-perl", "transform": None},
+    "php-": {"category": "dev-php", "transform": None},
+    "pypi-": {"category": "dev-python", "transform": None},
+    "python-": {"category": "dev-python", "transform": None},
+    "rubygem-": {"category": "dev-ruby", "transform": None},
+    # with transforms
+    "qt6": {"category": "dev-qt", "transform": "qt"},
 }
 
 
@@ -246,21 +249,27 @@ def create_match_result(
 
 def extract_package_info(pkg_name: str) -> tuple[str, Optional[str]]:
     """
-    Extract base package name and required category from prefixed
-    package names.
+    Extract base package name and required category from prefixed package names
 
     Args:
         pkg_name: The package name that may contain a prefix.
 
     Returns:
-        A tuple of (base_name, required_category) where:
-        - base_name: The package name with prefix removed if found
-        - required_category: The mandatory Gentoo category, if a prefix
-            was matched
+        A tuple of (transformed_name, required_category) where:
+        - transformed_name: The processed package name after prefix/transform
+          rules
+        - required_category: The mandatory Gentoo category for the package
     """
-    for prefix, category in PREFIX_TO_CATEGORY.items():
+    for prefix, mapping in PREFIX_MAPPINGS.items():
         if pkg_name.startswith(prefix):
-            return pkg_name[len(prefix) :], category
+            base_name = pkg_name[len(prefix) :]
+
+            if mapping["transform"]:
+                transformed_name = mapping["transform"] + base_name
+            else:
+                transformed_name = base_name
+
+            return transformed_name, mapping["category"]
 
     return pkg_name, None
 
@@ -333,9 +342,9 @@ def map_package(pkg_name: str, matcher: PackageMatcher) -> Dict:
     if result:
         return result
 
-    stripped_pkg, required_category = extract_package_info(pkg_name)
-    if stripped_pkg != pkg_name:
-        result = try_map_package(stripped_pkg, matcher, required_category)
+    transformed_name, required_category = extract_package_info(pkg_name)
+    if transformed_name != pkg_name:
+        result = try_map_package(transformed_name, matcher, required_category)
         if result:
             return result
 
