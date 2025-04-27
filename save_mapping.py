@@ -53,6 +53,14 @@ MANUAL_PKG_OVERRIDES = {
     "udisks2": "sys-fs/udisks",
     "v4l-utils": "media-libs/libv4l",
     "webkitgtk": "net-libs/webkit-gtk",
+    "xz": "app-arch/xz-utils",
+    "wine": "app-emulation/wine-vanilla",  # TODO: map to wine-staging and wine-proton too
+    "ntfs-3g": "sys-fs/ntfs3g",
+    "mesa-clc": "dev-util/mesa_clc",
+    "mediasdk": "media-libs/intel-mediasdk",
+    "intel-gmmlib": "media-libs/gmmlib",
+    "icu4c": "dev-libs/icu",
+    "WireGuard": "net-vpn/wireguard-tools",
 }
 
 PREFIX_MAPPINGS = {
