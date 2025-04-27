@@ -33,6 +33,7 @@ MANUAL_PKG_OVERRIDES = {
     "SDL": "media-libs/libsdl",
     "fmt": "dev-libs/libfmt",
     "httpd": "www-servers/apache",
+    "intel-media-driver": "media-libs/libva-intel-media-driver",
 }
 
 PREFIX_MAPPINGS = {
@@ -47,6 +48,8 @@ PREFIX_MAPPINGS = {
     "rubygem-": {"category": "dev-ruby", "transform": None},
     # with transforms
     "qt6": {"category": "dev-qt", "transform": "qt"},
+    "zope.": {"category": "dev-python", "transform": "zope-"},
+    "pypi-zope.": {"category": "dev-python", "transform": "zope-"},
 }
 
 
