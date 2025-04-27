@@ -99,7 +99,9 @@ class PackageMatcher:
         Args:
             category_to_pkgs: Dictionary mapping categories to package sets.
         """
-        self.lowercase_to_original: Dict[str, str] = {}
+        self.pkg_case_by_category: Dict[str, Dict[str, str]] = defaultdict(
+            dict
+        )
         self.lowercase_pkg_names: Set[str] = set()
         self.pkg_to_eligible_categories: Dict[str, List[str]] = defaultdict(
             list
@@ -120,7 +122,7 @@ class PackageMatcher:
             for pkg in pkgs:
                 lowercase_pkg = pkg.lower()
                 self.lowercase_pkg_names.add(lowercase_pkg)
-                self.lowercase_to_original[lowercase_pkg] = pkg
+                self.pkg_case_by_category[lowercase_pkg][category] = pkg
 
                 if is_optimizable:
                     self.pkg_to_eligible_categories[lowercase_pkg].append(
@@ -139,17 +141,28 @@ class PackageMatcher:
         """
         return self.pkg_to_eligible_categories.get(pkg_name.lower(), [])
 
-    def get_original_case(self, pkg_name: str) -> str:
+    def get_case_in_category(
+        self, pkg_name: str, category: str
+    ) -> Optional[str]:
         """
-        Get the original case of a package name.
+        Get the exact case of a package as it appears in a specific category.
 
         Args:
             pkg_name: The package name to look up.
+            category: The specific category to check.
 
         Returns:
-            Original case of the package name, or the input if not found.
+            The original case in that category, or None if not found.
         """
-        return self.lowercase_to_original.get(pkg_name.lower(), pkg_name)
+        lowercase_pkg = pkg_name.lower()
+
+        if (
+            lowercase_pkg in self.pkg_case_by_category
+            and category in self.pkg_case_by_category[lowercase_pkg]
+        ):
+            return self.pkg_case_by_category[lowercase_pkg][category]
+
+        return None
 
     def package_exists(self, pkg_name: str) -> bool:
         """
@@ -165,7 +178,7 @@ class PackageMatcher:
 
 
 # XXX: will create a proper implementation later
-def select_best_category(categories: List[str]) -> Optional[str]:
+def select_best_category(categories: List[str]) -> str:
     """
     Select the best category for a package from multiple matches.
 
@@ -175,7 +188,7 @@ def select_best_category(categories: List[str]) -> Optional[str]:
     Returns:
         The best category, or None if no categories are provided.
     """
-    return sorted(categories)[0] if categories else None
+    return sorted(categories)[0] if categories else ""
 
 
 def calculate_confidence(matching_categories: List[str]) -> float:
@@ -242,17 +255,25 @@ def map_package(pkg_name: str, matcher: PackageMatcher) -> Dict:
     if not matching_categories:
         return create_match_result()
 
-    original_case_pkg = matcher.get_original_case(pkg_name)
-
-    all_matches = [
-        f"{category}/{original_case_pkg}" for category in matching_categories
-    ]
+    all_matches = []
+    for category in matching_categories:
+        category_specific_case = matcher.get_case_in_category(
+            pkg_name, category
+        )
+        if category_specific_case:
+            all_matches.append(f"{category}/{category_specific_case}")
 
     best_category = select_best_category(matching_categories)
-    confidence = calculate_confidence(matching_categories)
-    best_match = f"{best_category}/{original_case_pkg}"
+    category_specific_case = matcher.get_case_in_category(
+        pkg_name, best_category
+    )
 
-    return create_match_result(best_match, confidence, all_matches)
+    if category_specific_case:
+        best_match = f"{best_category}/{category_specific_case}"
+        confidence = calculate_confidence(matching_categories)
+        return create_match_result(best_match, confidence, all_matches)
+
+    return create_match_result(None, 0.0, all_matches)
 
 
 def save_mapping_to_json(mapping_results: Dict, output_file: str):
