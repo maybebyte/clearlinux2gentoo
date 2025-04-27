@@ -35,6 +35,17 @@ MANUAL_PKG_OVERRIDES = {
     "httpd": "www-servers/apache",
 }
 
+PREFIX_TO_CATEGORY = {
+    "golang-": "dev-go",
+    "jdk-": "dev-java",
+    "mvn-": "dev-java",
+    "perl-": "dev-perl",
+    "php-": "dev-php",
+    "pypi-": "dev-python",
+    "python-": "dev-python",
+    "rubygem-": "dev-ruby",
+}
+
 
 def find_manual_override(pkg_name: str) -> Optional[Dict]:
     """
@@ -233,27 +244,58 @@ def create_match_result(
     }
 
 
-def map_package(pkg_name: str, matcher: PackageMatcher) -> Dict:
+def extract_package_info(pkg_name: str) -> tuple[str, Optional[str]]:
     """
-    Map a Clear Linux package to its Gentoo equivalent.
+    Extract base package name and required category from prefixed
+    package names.
 
     Args:
-        pkg_name: Clear Linux package name to map.
-        matcher: PackageMatcher with lookup tables.
+        pkg_name: The package name that may contain a prefix.
 
     Returns:
-        Mapping result dictionary.
+        A tuple of (base_name, required_category) where:
+        - base_name: The package name with prefix removed if found
+        - required_category: The mandatory Gentoo category, if a prefix
+            was matched
+    """
+    for prefix, category in PREFIX_TO_CATEGORY.items():
+        if pkg_name.startswith(prefix):
+            return pkg_name[len(prefix) :], category
+
+    return pkg_name, None
+
+
+def try_map_package(
+    pkg_name: str,
+    matcher: PackageMatcher,
+    required_category: Optional[str] = None,
+) -> Optional[Dict]:
+    """
+    Helper function to try mapping a package name to Gentoo.
+
+    Args:
+        pkg_name: Package name to map.
+        matcher: PackageMatcher with lookup tables.
+        required_category: If provided, only consider matches in this category.
+
+    Returns:
+        Mapping result dictionary or None if no match.
     """
     override_match = find_manual_override(pkg_name)
     if override_match:
         return override_match
 
     if not matcher.package_exists(pkg_name):
-        return create_match_result()
+        return None
 
     matching_categories = matcher.find_matching_categories(pkg_name)
     if not matching_categories:
-        return create_match_result()
+        return None
+
+    if required_category:
+        if required_category not in matching_categories:
+            return None
+        matching_categories = [required_category]
 
     all_matches = []
     for category in matching_categories:
@@ -273,7 +315,31 @@ def map_package(pkg_name: str, matcher: PackageMatcher) -> Dict:
         confidence = calculate_confidence(matching_categories)
         return create_match_result(best_match, confidence, all_matches)
 
-    return create_match_result(None, 0.0, all_matches)
+    return None
+
+
+def map_package(pkg_name: str, matcher: PackageMatcher) -> Dict:
+    """
+    Map a Clear Linux package to its Gentoo equivalent.
+
+    Args:
+        pkg_name: Clear Linux package name to map.
+        matcher: PackageMatcher with lookup tables.
+
+    Returns:
+        Mapping result dictionary.
+    """
+    result = try_map_package(pkg_name, matcher)
+    if result:
+        return result
+
+    stripped_pkg, required_category = extract_package_info(pkg_name)
+    if stripped_pkg != pkg_name:
+        result = try_map_package(stripped_pkg, matcher, required_category)
+        if result:
+            return result
+
+    return create_match_result()
 
 
 def save_mapping_to_json(mapping_results: Dict, output_file: str):
