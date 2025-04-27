@@ -11,6 +11,9 @@ CLEARLINUX_PKG_FILE = "data/clearlinux_pkgs.txt"
 GENTOO_PKG_FILE = "data/gentoo_pkgs.txt"
 OUTPUT_FILE = "data/pkg_mapping.json"
 
+# TODO: resolve bug that causes other packages to be listed, e.g. mvn-xz
+# and jdk-xz now get listed if I map xz to xz-utils
+
 # Categories that don't benefit from compile-time optimizations
 NON_OPTIMIZABLE_CATEGORIES = {
     "acct-group",
