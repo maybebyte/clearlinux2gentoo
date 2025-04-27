@@ -15756,9 +15756,11 @@
     "gentoo_match": "app-crypt/intel-ipsec-mb"
   },
   "intel-media-driver": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/libva-intel-media-driver"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/libva-intel-media-driver"
   },
   "intel-one-mono": {
     "all_matches": [],
@@ -52870,14 +52872,18 @@
     "gentoo_match": null
   },
   "zope.component": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-python/zope-component"
+    ],
+    "confidence": 0.8,
+    "gentoo_match": "dev-python/zope-component"
   },
   "zope.configuration": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-python/zope-configuration"
+    ],
+    "confidence": 0.8,
+    "gentoo_match": "dev-python/zope-configuration"
   },
   "zope.deferredimport": {
     "all_matches": [],
@@ -52885,34 +52891,46 @@
     "gentoo_match": null
   },
   "zope.deprecation": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-python/zope-deprecation"
+    ],
+    "confidence": 0.8,
+    "gentoo_match": "dev-python/zope-deprecation"
   },
   "zope.event": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-python/zope-event"
+    ],
+    "confidence": 0.8,
+    "gentoo_match": "dev-python/zope-event"
   },
   "zope.exceptions": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-python/zope-exceptions"
+    ],
+    "confidence": 0.8,
+    "gentoo_match": "dev-python/zope-exceptions"
   },
   "zope.hookable": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-python/zope-hookable"
+    ],
+    "confidence": 0.8,
+    "gentoo_match": "dev-python/zope-hookable"
   },
   "zope.i18nmessageid": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-python/zope-i18nmessageid"
+    ],
+    "confidence": 0.8,
+    "gentoo_match": "dev-python/zope-i18nmessageid"
   },
   "zope.interface": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-python/zope-interface"
+    ],
+    "confidence": 0.8,
+    "gentoo_match": "dev-python/zope-interface"
   },
   "zope.location": {
     "all_matches": [],
@@ -52925,9 +52943,11 @@
     "gentoo_match": null
   },
   "zope.schema": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-python/zope-schema"
+    ],
+    "confidence": 0.8,
+    "gentoo_match": "dev-python/zope-schema"
   },
   "zope.security": {
     "all_matches": [],
@@ -52935,9 +52955,11 @@
     "gentoo_match": null
   },
   "zope.testing": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-python/zope-testing"
+    ],
+    "confidence": 0.8,
+    "gentoo_match": "dev-python/zope-testing"
   },
   "zope.testrunner": {
     "all_matches": [],
