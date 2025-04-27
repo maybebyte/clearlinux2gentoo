@@ -44,7 +44,9 @@ def get_clearlinux_packages():
             print("No more repositories found")
             break
 
-        new_packages = [repo["name"] for repo in repos]
+        new_packages = [
+            repo["name"] for repo in repos if not repo.get("archived", False)
+        ]
         packages.extend(new_packages)
 
         print(
