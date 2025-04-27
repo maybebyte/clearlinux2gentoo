@@ -6254,9 +6254,11 @@
     "gentoo_match": "dev-python/whoosh"
   },
   "WireGuard": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "net-vpn/wireguard-tools"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "net-vpn/wireguard-tools"
   },
   "XStatic": {
     "all_matches": [],
@@ -15518,9 +15520,11 @@
     "gentoo_match": "x11-misc/icon-naming-utils"
   },
   "icu4c": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/icu"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/icu"
   },
   "identify": {
     "all_matches": [
@@ -15749,9 +15753,11 @@
     "gentoo_match": "dev-libs/intel-compute-runtime"
   },
   "intel-gmmlib": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/gmmlib"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/gmmlib"
   },
   "intel-gpu-tools": {
     "all_matches": [],
@@ -18019,9 +18025,11 @@
     "gentoo_match": "dev-java/xmlunit"
   },
   "jdk-xz": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "app-arch/xz-utils"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "app-arch/xz-utils"
   },
   "jdk-yammer-metrics": {
     "all_matches": [],
@@ -23746,9 +23754,11 @@
     "gentoo_match": "app-misc/media-player-info"
   },
   "mediasdk": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/intel-mediasdk"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/intel-mediasdk"
   },
   "meld": {
     "all_matches": [
@@ -23806,9 +23816,11 @@
     "gentoo_match": "media-libs/mesa"
   },
   "mesa-clc": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-util/mesa_clc"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-util/mesa_clc"
   },
   "mesa-demos": {
     "all_matches": [],
@@ -28063,9 +28075,11 @@
     "gentoo_match": null
   },
   "mvn-xz": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "app-arch/xz-utils"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "app-arch/xz-utils"
   },
   "mvn-yetus": {
     "all_matches": [],
@@ -28824,9 +28838,11 @@
     "gentoo_match": "sys-auth/nss-pam-ldapd"
   },
   "ntfs-3g": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "sys-fs/ntfs3g"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "sys-fs/ntfs3g"
   },
   "ntl": {
     "all_matches": [
@@ -51633,9 +51649,11 @@
     "gentoo_match": "dev-python/widgetsnbextension"
   },
   "wine": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "app-emulation/wine-vanilla"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "app-emulation/wine-vanilla"
   },
   "winegui": {
     "all_matches": [],
@@ -52630,9 +52648,11 @@
     "gentoo_match": "dev-libs/xxhash"
   },
   "xz": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "app-arch/xz-utils"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "app-arch/xz-utils"
   },
   "yajl": {
     "all_matches": [
