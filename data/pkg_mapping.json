@@ -31,9 +31,11 @@
     "gentoo_match": "sci-mathematics/cgal"
   },
   "CGNS": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "sci-libs/cgnslib"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "sci-libs/cgnslib"
   },
   "CNTK": {
     "all_matches": [],
@@ -199,9 +201,11 @@
     "gentoo_match": "net-misc/freerdp"
   },
   "FreeRDP2": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "net-misc/freerdp"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "net-misc/freerdp"
   },
   "GConf": {
     "all_matches": [],
@@ -331,9 +335,11 @@
     "gentoo_match": "media-gfx/librecad"
   },
   "Linux-PAM": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "sys-libs/pam"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "sys-libs/pam"
   },
   "LuaJIT": {
     "all_matches": [
@@ -7305,9 +7311,11 @@
     "gentoo_match": "net-dns/avahi"
   },
   "awesome-wm": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "x11-wm/awesome"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "x11-wm/awesome"
   },
   "awesomeversion": {
     "all_matches": [],
@@ -8069,9 +8077,11 @@
     "gentoo_match": "dev-python/binaryornot"
   },
   "bind-utils": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "net-dns/bind-tools"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "net-dns/bind-tools"
   },
   "binutils": {
     "all_matches": [
@@ -8209,9 +8219,11 @@
     "gentoo_match": null
   },
   "boinc-client": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "net-misc/boinc"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "net-misc/boinc"
   },
   "bokeh": {
     "all_matches": [],
@@ -13382,9 +13394,11 @@
     "gentoo_match": "dev-lang/ghc"
   },
   "ghostscript": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "app-text/ghostscript-gpl"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "app-text/ghostscript-gpl"
   },
   "gi-docgen": {
     "all_matches": [
@@ -13962,9 +13976,11 @@
     "gentoo_match": null
   },
   "gnome-tweak-tool": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "gnome-extra/gnome-tweaks"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "gnome-extra/gnome-tweaks"
   },
   "gnome-tweaks": {
     "all_matches": [
@@ -14592,9 +14608,11 @@
     "gentoo_match": "dev-python/graphene"
   },
   "graphite": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/graphite2"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/graphite2"
   },
   "graphviz": {
     "all_matches": [
@@ -14876,15 +14894,17 @@
   },
   "gtk3": {
     "all_matches": [
-      "dev-perl/Gtk3"
+      "x11-libs/gtk+"
     ],
-    "confidence": 0.8,
-    "gentoo_match": "dev-perl/Gtk3"
+    "confidence": 1.0,
+    "gentoo_match": "x11-libs/gtk+"
   },
   "gtk4": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "gui-libs/gtk"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "gui-libs/gtk"
   },
   "gtkglext": {
     "all_matches": [
@@ -14922,9 +14942,11 @@
     "gentoo_match": null
   },
   "gtkspell3": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "app-text/gtkspell"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "app-text/gtkspell"
   },
   "gtkwave": {
     "all_matches": [
@@ -15744,9 +15766,11 @@
     "gentoo_match": "dev-util/intel-graphics-compiler"
   },
   "intel-hybrid-driver": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/intel-hybrid-codec-driver"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/intel-hybrid-codec-driver"
   },
   "intel-ipsec-mb": {
     "all_matches": [
@@ -20163,9 +20187,11 @@
     "gentoo_match": "dev-python/lazy-object-proxy"
   },
   "lcms2": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/lcms"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/lcms"
   },
   "lcov": {
     "all_matches": [
@@ -50092,9 +50118,11 @@
     "gentoo_match": "dev-cpp/taskflow"
   },
   "taskwarrior": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "app-misc/task"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "app-misc/task"
   },
   "tbb": {
     "all_matches": [
@@ -50414,9 +50442,11 @@
     "gentoo_match": "sys-apps/the_silver_searcher"
   },
   "thermal_daemon": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "sys-power/thermald"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "sys-power/thermald"
   },
   "thermal_monitor": {
     "all_matches": [],
@@ -50866,9 +50896,11 @@
     "gentoo_match": null
   },
   "udisks2": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "sys-fs/udisks"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "sys-fs/udisks"
   },
   "udunits": {
     "all_matches": [
@@ -51144,9 +51176,11 @@
     "gentoo_match": "www-servers/uwsgi"
   },
   "v4l-utils": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/libv4l"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/libv4l"
   },
   "vala": {
     "all_matches": [
@@ -51502,9 +51536,11 @@
     "gentoo_match": "dev-python/webencodings"
   },
   "webkitgtk": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "net-libs/webkit-gtk"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "net-libs/webkit-gtk"
   },
   "webkitgtk50": {
     "all_matches": [],
