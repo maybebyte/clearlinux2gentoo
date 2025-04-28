@@ -102,6 +102,17 @@ MANUAL_PKG_OVERRIDES = {
     "libMED": "sci-libs/med",
     "libgd": "media-libs/gd",
     "libzmq": "net-libs/zeromq",
+    "onig": "dev-libs/oniguruma",
+    "libftdi1": "dev-libs/libftdi",
+    "gtest": "dev-cpp/googletest",
+    "google-benchmark": "dev-cpp/google-benchmark",
+    "google-crc32c": "dev-libs/crc32c",
+    "not-ffmpeg": "media-libs/ffmpeg",
+    "gstreamer-vaapi": "media-plugins/gst-plugins-vaapi",
+    "xmlsec1": "dev-libs/xmlsec",
+    "indi": "sci-libs/indilib",
+    "kdeconnect-kde": "kde-misc/kdeconnect",
+    "valkey": "dev-db/redis",
 }
 
 PREFIX_MAPPINGS = {

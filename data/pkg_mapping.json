@@ -9680,9 +9680,11 @@
     "gentoo_match": "x11-libs/goocanvas"
   },
   "google-benchmark": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-cpp/google-benchmark"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-cpp/google-benchmark"
   },
   "google-cloud-cpp": {
     "all_matches": [
@@ -9692,9 +9694,11 @@
     "gentoo_match": "net-libs/google-cloud-cpp"
   },
   "google-crc32c": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/crc32c"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/crc32c"
   },
   "googletest": {
     "all_matches": [],
@@ -9979,9 +9983,11 @@
     "gentoo_match": "media-libs/gstreamer"
   },
   "gstreamer-vaapi": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-plugins/gst-plugins-vaapi"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-plugins/gst-plugins-vaapi"
   },
   "gtk-doc": {
     "all_matches": [
@@ -10468,9 +10474,11 @@
     "gentoo_match": "dev-util/indent"
   },
   "indi": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "sci-libs/indilib"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "sci-libs/indilib"
   },
   "inetutils": {
     "all_matches": [
@@ -11181,9 +11189,11 @@
     "gentoo_match": "kde-frameworks/kdeclarative"
   },
   "kdeconnect-kde": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "kde-misc/kdeconnect"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "kde-misc/kdeconnect"
   },
   "kdecoration": {
     "all_matches": [
@@ -13061,9 +13071,11 @@
     "gentoo_match": "media-libs/libfreehand"
   },
   "libftdi1": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/libftdi"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/libftdi"
   },
   "libgbinder": {
     "all_matches": [],
@@ -15955,9 +15967,11 @@
     "gentoo_match": null
   },
   "not-ffmpeg": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/ffmpeg"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/ffmpeg"
   },
   "notmuch": {
     "all_matches": [
@@ -16165,9 +16179,11 @@
     "gentoo_match": null
   },
   "onig": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/oniguruma"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/oniguruma"
   },
   "opa-fm": {
     "all_matches": [],
@@ -32044,9 +32060,11 @@
     "gentoo_match": "dev-cpp/valijson"
   },
   "valkey": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-db/redis"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-db/redis"
   },
   "vapoursynth": {
     "all_matches": [],
@@ -32846,9 +32864,11 @@
     "gentoo_match": null
   },
   "xmlsec1": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/xmlsec"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/xmlsec"
   },
   "xmlstarlet": {
     "all_matches": [
