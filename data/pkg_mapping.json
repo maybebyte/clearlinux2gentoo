@@ -10024,25 +10024,19 @@
     "gentoo_match": "gui-libs/gtk"
   },
   "gtkmm2": {
-    "all_matches": [
-      "dev-cpp/gtkmm"
-    ],
-    "confidence": 1.0,
-    "gentoo_match": "dev-cpp/gtkmm"
+    "all_matches": [],
+    "confidence": 0.0,
+    "gentoo_match": null
   },
   "gtkmm3": {
-    "all_matches": [
-      "dev-cpp/gtkmm"
-    ],
-    "confidence": 1.0,
-    "gentoo_match": "dev-cpp/gtkmm"
+    "all_matches": [],
+    "confidence": 0.0,
+    "gentoo_match": null
   },
   "gtkmm4": {
-    "all_matches": [
-      "dev-cpp/gtkmm"
-    ],
-    "confidence": 1.0,
-    "gentoo_match": "dev-cpp/gtkmm"
+    "all_matches": [],
+    "confidence": 0.0,
+    "gentoo_match": null
   },
   "gtksourceview": {
     "all_matches": [
