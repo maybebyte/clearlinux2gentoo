@@ -8410,11 +8410,10 @@
   },
   "exo": {
     "all_matches": [
-      "app-admin/exo",
       "xfce-base/exo"
     ],
-    "confidence": 0.5,
-    "gentoo_match": "app-admin/exo"
+    "confidence": 1.0,
+    "gentoo_match": "xfce-base/exo"
   },
   "expat": {
     "all_matches": [
@@ -9701,9 +9700,11 @@
     "gentoo_match": "dev-libs/crc32c"
   },
   "googletest": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-cpp/gtest"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-cpp/gtest"
   },
   "gparted": {
     "all_matches": [
@@ -10223,9 +10224,11 @@
     "gentoo_match": "sys-apps/highway"
   },
   "hiredis-c": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/hiredis"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/hiredis"
   },
   "hostname": {
     "all_matches": [

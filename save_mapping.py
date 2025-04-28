@@ -48,7 +48,6 @@ MANUAL_PKG_OVERRIDES = {
     "bind-utils": "net-dns/bind-tools",
     "boinc-client": "net-misc/boinc",
     "ghostscript": "app-text/ghostscript-gpl",
-    "gnome-tweak-tool": "gnome-extra/gnome-tweaks",
     "graphite": "dev-libs/graphite2",
     "gtk4": "gui-libs/gtk",
     "gtk3": "x11-libs/gtk+",
@@ -91,7 +90,7 @@ MANUAL_PKG_OVERRIDES = {
     "gperftools": "dev-util/google-perftools",
     "gtksourceview": "gui-libs/gtksourceview",
     "gtksourceview4": "x11-libs/gtksourceview",
-    "hiredis-client": "dev-libs/hiredis",
+    "hiredis-c": "dev-libs/hiredis",
     "libsigc-plus-plus": "dev-libs/libsigc++",
     "ocl-icd": "dev-libs/opencl-icd-loader",
     "xorgproto": "x11-base/xorg-proto",
@@ -107,7 +106,7 @@ MANUAL_PKG_OVERRIDES = {
     "libzmq": "net-libs/zeromq",
     "onig": "dev-libs/oniguruma",
     "libftdi1": "dev-libs/libftdi",
-    "gtest": "dev-cpp/googletest",
+    "googletest": "dev-cpp/gtest",
     "google-benchmark": "dev-cpp/google-benchmark",
     "google-crc32c": "dev-libs/crc32c",
     "not-ffmpeg": "media-libs/ffmpeg",
@@ -117,6 +116,7 @@ MANUAL_PKG_OVERRIDES = {
     "kdeconnect-kde": "kde-misc/kdeconnect",
     "valkey": "dev-db/redis",
     "mc": "app-misc/mc",
+    "exo": "xfce-base/exo",
 }
 
 PREFIX_MAPPINGS = {
