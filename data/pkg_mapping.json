@@ -5395,39 +5395,53 @@
     "gentoo_match": "media-libs/libsdl"
   },
   "SDL2": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/libsdl2"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/libsdl2"
   },
   "SDL2_gfx": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/sdl2-gfx"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/sdl2-gfx"
   },
   "SDL2_image": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/sdl2-image"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/sdl2-image"
   },
   "SDL2_mixer": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/sdl2-mixer"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/sdl2-mixer"
   },
   "SDL2_net": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/sdl2-net"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/sdl2-net"
   },
   "SDL2_ttf": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/sdl2-ttf"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/sdl2-ttf"
   },
   "SDL3": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/libsdl3"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/libsdl3"
   },
   "SDL_gfx": {
     "all_matches": [],
@@ -5460,9 +5474,11 @@
     "gentoo_match": null
   },
   "SFML": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/libsfml"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/libsfml"
   },
   "SPIRV-Cross": {
     "all_matches": [],
@@ -7044,9 +7060,11 @@
     "gentoo_match": null
   },
   "clucene-core": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-cpp/clucene"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-cpp/clucene"
   },
   "clutter": {
     "all_matches": [
@@ -8861,9 +8879,11 @@
     "gentoo_match": null
   },
   "gc": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/boehm-gc"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/boehm-gc"
   },
   "gcab": {
     "all_matches": [
@@ -9691,9 +9711,11 @@
     "gentoo_match": "dev-util/gperf"
   },
   "gperftools": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-util/google-perftools"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-util/google-perftools"
   },
   "gpgme": {
     "all_matches": [
@@ -9969,9 +9991,11 @@
     "gentoo_match": "gui-libs/gtk-layer-shell"
   },
   "gtk-plus": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "x11-libs/gtk+"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "x11-libs/gtk+"
   },
   "gtk-vnc": {
     "all_matches": [
@@ -10000,32 +10024,39 @@
     "gentoo_match": "gui-libs/gtk"
   },
   "gtkmm2": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-cpp/gtkmm"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-cpp/gtkmm"
   },
   "gtkmm3": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-cpp/gtkmm"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-cpp/gtkmm"
   },
   "gtkmm4": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-cpp/gtkmm"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-cpp/gtkmm"
   },
   "gtksourceview": {
     "all_matches": [
-      "gui-libs/gtksourceview",
-      "x11-libs/gtksourceview"
+      "gui-libs/gtksourceview"
     ],
-    "confidence": 0.5,
+    "confidence": 1.0,
     "gentoo_match": "gui-libs/gtksourceview"
   },
   "gtksourceview4": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "x11-libs/gtksourceview"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "x11-libs/gtksourceview"
   },
   "gtkspell3": {
     "all_matches": [
@@ -13920,9 +13951,11 @@
     "gentoo_match": "gnome-base/librsvg"
   },
   "librtlsdr": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "net-wireless/rtl-sdr"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "net-wireless/rtl-sdr"
   },
   "librttopo": {
     "all_matches": [
@@ -13961,9 +13994,11 @@
     "gentoo_match": "app-crypt/libsecret"
   },
   "libsigc-plus-plus": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/libsigc++"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/libsigc++"
   },
   "libsignal-protocol-c": {
     "all_matches": [
@@ -15431,9 +15466,11 @@
     "gentoo_match": "media-video/mpv"
   },
   "msgpack-c": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/msgpack"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/msgpack"
   },
   "msmtp": {
     "all_matches": [
@@ -16080,9 +16117,11 @@
     "gentoo_match": "dev-ml/ocamlbuild"
   },
   "ocl-icd": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/opencl-icd-loader"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/opencl-icd-loader"
   },
   "octave": {
     "all_matches": [
@@ -16155,9 +16194,11 @@
     "gentoo_match": "app-emulation/open-vm-tools"
   },
   "openal-soft": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/openal"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/openal"
   },
   "openblas": {
     "all_matches": [
@@ -16591,14 +16632,18 @@
     "gentoo_match": null
   },
   "pcre": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/libpcre"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/libpcre"
   },
   "pcre2": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/libpcre2"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/libpcre2"
   },
   "pcsc-lite": {
     "all_matches": [
@@ -22937,9 +22982,11 @@
     "gentoo_match": "mail-filter/procmail"
   },
   "procps-ng": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "sys-process/procps"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "sys-process/procps"
   },
   "proj": {
     "all_matches": [
@@ -29594,9 +29641,11 @@
     "gentoo_match": "dev-libs/qcoro"
   },
   "qcoro6": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/qcoro"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/qcoro"
   },
   "qdmr": {
     "all_matches": [
@@ -30248,9 +30297,11 @@
     "gentoo_match": "dev-libs/rapidjson"
   },
   "raptor2": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/raptor"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/raptor"
   },
   "rasdaemon": {
     "all_matches": [
@@ -31911,9 +31962,11 @@
     "gentoo_match": "net-libs/usrsctp"
   },
   "utf8proc": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/libutf8proc"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/libutf8proc"
   },
   "utfcpp": {
     "all_matches": [
@@ -32346,9 +32399,11 @@
     "gentoo_match": null
   },
   "xapian-core": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "dev-libs/xapian"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "dev-libs/xapian"
   },
   "xastir": {
     "all_matches": [
@@ -32826,9 +32881,11 @@
     "gentoo_match": "x11-base/xorg-server"
   },
   "xorgproto": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "x11-base/xorg-proto"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "x11-base/xorg-proto"
   },
   "xorriso": {
     "all_matches": [],
