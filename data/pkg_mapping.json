@@ -6697,7 +6697,7 @@
       "x11-libs/cairo"
     ],
     "confidence": 0.333,
-    "gentoo_match": "dev-haskell/cairo"
+    "gentoo_match": "x11-libs/cairo"
   },
   "cairomm": {
     "all_matches": [
@@ -6804,7 +6804,7 @@
       "dev-libs/cereal"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-haskell/cereal"
+    "gentoo_match": "dev-libs/cereal"
   },
   "cfitsio": {
     "all_matches": [
@@ -7714,7 +7714,7 @@
       "sys-apps/dbus"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-haskell/dbus"
+    "gentoo_match": "sys-apps/dbus"
   },
   "dbus-broker": {
     "all_matches": [
@@ -8000,7 +8000,7 @@
       "kde-apps/dolphin"
     ],
     "confidence": 0.5,
-    "gentoo_match": "games-emulation/dolphin"
+    "gentoo_match": "kde-apps/dolphin"
   },
   "dolphin-plugins": {
     "all_matches": [],
@@ -8429,7 +8429,7 @@
       "dev-tcltk/expect"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-perl/Expect"
+    "gentoo_match": "dev-tcltk/expect"
   },
   "extra-cmake-modules": {
     "all_matches": [
@@ -8848,7 +8848,7 @@
       "sys-fs/fuse"
     ],
     "confidence": 0.333,
-    "gentoo_match": "app-emulation/fuse"
+    "gentoo_match": "sys-fs/fuse"
   },
   "fwupd": {
     "all_matches": [
@@ -8984,7 +8984,7 @@
       "dev-libs/gdl"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-lang/gdl"
+    "gentoo_match": "dev-libs/gdl"
   },
   "gdm": {
     "all_matches": [
@@ -9140,7 +9140,7 @@
       "dev-vcs/git"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-ruby/git"
+    "gentoo_match": "dev-vcs/git"
   },
   "git-gui": {
     "all_matches": [],
@@ -9153,7 +9153,7 @@
       "dev-vcs/git-lfs"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-haskell/git-lfs"
+    "gentoo_match": "dev-vcs/git-lfs"
   },
   "gitg": {
     "all_matches": [
@@ -9196,7 +9196,7 @@
       "media-libs/glfw"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-python/glfw"
+    "gentoo_match": "media-libs/glfw"
   },
   "glib": {
     "all_matches": [
@@ -9204,7 +9204,7 @@
       "dev-libs/glib"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-haskell/glib"
+    "gentoo_match": "dev-libs/glib"
   },
   "glib-networking": {
     "all_matches": [
@@ -9637,7 +9637,7 @@
       "sci-visualization/gnuplot"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-ruby/gnuplot"
+    "gentoo_match": "sci-visualization/gnuplot"
   },
   "gnutls": {
     "all_matches": [
@@ -9817,7 +9817,7 @@
       "media-libs/graphene"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-python/graphene"
+    "gentoo_match": "media-libs/graphene"
   },
   "graphite": {
     "all_matches": [
@@ -9833,7 +9833,7 @@
       "media-gfx/graphviz"
     ],
     "confidence": 0.333,
-    "gentoo_match": "dev-perl/GraphViz"
+    "gentoo_match": "media-gfx/graphviz"
   },
   "grass": {
     "all_matches": [
@@ -9898,7 +9898,7 @@
       "net-libs/grpc"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-ruby/grpc"
+    "gentoo_match": "net-libs/grpc"
   },
   "gsequencer": {
     "all_matches": [],
@@ -10220,7 +10220,7 @@
       "sys-apps/highway"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-cpp/highway"
+    "gentoo_match": "sys-apps/highway"
   },
   "hiredis-c": {
     "all_matches": [],
@@ -10405,7 +10405,7 @@
       "sys-devel/icecream"
     ],
     "confidence": 0.333,
-    "gentoo_match": "dev-python/icecream"
+    "gentoo_match": "sys-devel/icecream"
   },
   "icon-naming-utils": {
     "all_matches": [
@@ -11382,7 +11382,7 @@
       "sys-apps/keyutils"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-python/keyutils"
+    "gentoo_match": "sys-apps/keyutils"
   },
   "kfilemetadata": {
     "all_matches": [
@@ -14263,7 +14263,7 @@
       "sys-libs/libunwind"
     ],
     "confidence": 0.5,
-    "gentoo_match": "llvm-runtimes/libunwind"
+    "gentoo_match": "sys-libs/libunwind"
   },
   "liburing": {
     "all_matches": [
@@ -14691,7 +14691,7 @@
       "llvm-core/llvm"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-ml/llvm"
+    "gentoo_match": "llvm-core/llvm"
   },
   "llvm14": {
     "all_matches": [],
@@ -14825,7 +14825,7 @@
       "dev-lang/lua"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-haskell/lua"
+    "gentoo_match": "dev-lang/lua"
   },
   "lua-nginx-module": {
     "all_matches": [],
@@ -14995,11 +14995,9 @@
   },
   "mc": {
     "all_matches": [
-      "app-misc/mc",
-      "net-fs/mc",
-      "sci-libs/mc"
+      "app-misc/mc"
     ],
-    "confidence": 0.333,
+    "confidence": 1.0,
     "gentoo_match": "app-misc/mc"
   },
   "mccabe": {
@@ -15339,7 +15337,7 @@
       "dev-util/mock"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-python/mock"
+    "gentoo_match": "dev-util/mock"
   },
   "mod_perl": {
     "all_matches": [
@@ -15719,7 +15717,7 @@
       "net-analyzer/net-snmp"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-perl/Net-SNMP"
+    "gentoo_match": "net-analyzer/net-snmp"
   },
   "net-tools": {
     "all_matches": [
@@ -16098,7 +16096,7 @@
       "sys-power/nut"
     ],
     "confidence": 0.5,
-    "gentoo_match": "app-misc/nut"
+    "gentoo_match": "sys-power/nut"
   },
   "nv-codec-headers": {
     "all_matches": [
@@ -16547,7 +16545,7 @@
       "x11-libs/pango"
     ],
     "confidence": 0.333,
-    "gentoo_match": "dev-haskell/pango"
+    "gentoo_match": "x11-libs/pango"
   },
   "pangomm": {
     "all_matches": [
@@ -16563,7 +16561,7 @@
       "sys-process/parallel"
     ],
     "confidence": 0.333,
-    "gentoo_match": "dev-haskell/parallel"
+    "gentoo_match": "sys-process/parallel"
   },
   "parley": {
     "all_matches": [
@@ -29752,7 +29750,7 @@
       "x11-libs/qscintilla"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-python/qscintilla"
+    "gentoo_match": "x11-libs/qscintilla"
   },
   "qsstv": {
     "all_matches": [
@@ -30386,7 +30384,7 @@
       "sys-libs/readline"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-lua/readline"
+    "gentoo_match": "sys-libs/readline"
   },
   "rebootmgr": {
     "all_matches": [],
@@ -30794,7 +30792,7 @@
       "net-libs/serf"
     ],
     "confidence": 0.5,
-    "gentoo_match": "app-admin/serf"
+    "gentoo_match": "net-libs/serf"
   },
   "setserial": {
     "all_matches": [
@@ -30913,7 +30911,7 @@
       "sys-libs/slang"
     ],
     "confidence": 0.333,
-    "gentoo_match": "dev-crystal/slang"
+    "gentoo_match": "sys-libs/slang"
   },
   "slirp4netns": {
     "all_matches": [
@@ -30933,7 +30931,7 @@
       "sys-cluster/slurm"
     ],
     "confidence": 0.5,
-    "gentoo_match": "net-analyzer/slurm"
+    "gentoo_match": "sys-cluster/slurm"
   },
   "smartmontools": {
     "all_matches": [
@@ -31121,7 +31119,7 @@
       "net-libs/srt"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-python/srt"
+    "gentoo_match": "net-libs/srt"
   },
   "sshpass": {
     "all_matches": [
@@ -31696,7 +31694,7 @@
       "sys-process/time"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-ruby/time"
+    "gentoo_match": "sys-process/time"
   },
   "tini": {
     "all_matches": [
@@ -32159,7 +32157,7 @@
       "sci-libs/volk"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-util/volk"
+    "gentoo_match": "sci-libs/volk"
   },
   "volume_key": {
     "all_matches": [
@@ -32186,7 +32184,7 @@
       "x11-libs/vte"
     ],
     "confidence": 0.5,
-    "gentoo_match": "gui-libs/vte"
+    "gentoo_match": "x11-libs/vte"
   },
   "waffle": {
     "all_matches": [
@@ -33092,7 +33090,7 @@
       "dev-perl/YAML"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-haskell/yaml"
+    "gentoo_match": "dev-perl/YAML"
   },
   "yaml-cpp": {
     "all_matches": [
@@ -33198,7 +33196,7 @@
       "sys-libs/zlib"
     ],
     "confidence": 0.5,
-    "gentoo_match": "dev-haskell/zlib"
+    "gentoo_match": "sys-libs/zlib"
   },
   "zlib-ng": {
     "all_matches": [
