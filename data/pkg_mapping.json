@@ -5444,29 +5444,39 @@
     "gentoo_match": "media-libs/libsdl3"
   },
   "SDL_gfx": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/sdl-gfx"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/sdl-gfx"
   },
   "SDL_image": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/sdl-image"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/sdl-image"
   },
   "SDL_mixer": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/sdl-mixer"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/sdl-mixer"
   },
   "SDL_net": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/sdl-net"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/sdl-net"
   },
   "SDL_ttf": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/sdl-ttf"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/sdl-ttf"
   },
   "SFCGAL": {
     "all_matches": [],
@@ -5920,9 +5930,11 @@
     "gentoo_match": "net-analyzer/arp-scan"
   },
   "arpack-ng": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "sci-libs/arpack"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "sci-libs/arpack"
   },
   "asciidoc": {
     "all_matches": [
@@ -12394,9 +12406,11 @@
     "gentoo_match": null
   },
   "libMED": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "sci-libs/med"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "sci-libs/med"
   },
   "libX11": {
     "all_matches": [
@@ -13064,9 +13078,11 @@
     "gentoo_match": "dev-libs/libgcrypt"
   },
   "libgd": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/gd"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/gd"
   },
   "libgdata": {
     "all_matches": [
@@ -14512,9 +14528,11 @@
     "gentoo_match": "media-libs/libzmf"
   },
   "libzmq": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "net-libs/zeromq"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "net-libs/zeromq"
   },
   "lightdm": {
     "all_matches": [
@@ -32995,9 +33013,11 @@
     "gentoo_match": "x11-misc/xvfb-run"
   },
   "xvidcore": {
-    "all_matches": [],
-    "confidence": 0.0,
-    "gentoo_match": null
+    "all_matches": [
+      "media-libs/xvid"
+    ],
+    "confidence": 1.0,
+    "gentoo_match": "media-libs/xvid"
   },
   "xwayland": {
     "all_matches": [

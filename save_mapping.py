@@ -92,6 +92,16 @@ MANUAL_PKG_OVERRIDES = {
     "libsigc-plus-plus": "dev-libs/libsigc++",
     "ocl-icd": "dev-libs/opencl-icd-loader",
     "xorgproto": "x11-base/xorg-proto",
+    "SDL_gfx": "media-libs/sdl-gfx",
+    "SDL_image": "media-libs/sdl-image",
+    "SDL_mixer": "media-libs/sdl-mixer",
+    "SDL_net": "media-libs/sdl-net",
+    "SDL_ttf": "media-libs/sdl-ttf",
+    "xvidcore": "media-libs/xvid",
+    "arpack-ng": "sci-libs/arpack",
+    "libMED": "sci-libs/med",
+    "libgd": "media-libs/gd",
+    "libzmq": "net-libs/zeromq",
 }
 
 PREFIX_MAPPINGS = {
