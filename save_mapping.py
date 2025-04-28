@@ -14,6 +14,9 @@ OUTPUT_FILE = "data/pkg_mapping.json"
 # TODO: resolve bug that causes other packages to be listed, e.g. mvn-xz
 # and jdk-xz now get listed if I map xz to xz-utils
 
+# This is for the category prioritization system
+DEFAULT_LOWEST_PRIORITY = 999
+
 # Categories that don't benefit from compile-time optimizations
 NON_OPTIMIZABLE_CATEGORIES = {
     "acct-group",
@@ -113,6 +116,7 @@ MANUAL_PKG_OVERRIDES = {
     "indi": "sci-libs/indilib",
     "kdeconnect-kde": "kde-misc/kdeconnect",
     "valkey": "dev-db/redis",
+    "mc": "app-misc/mc",
 }
 
 PREFIX_MAPPINGS = {
@@ -130,6 +134,202 @@ PREFIX_MAPPINGS = {
     "zope.": {"category": "dev-python", "transform": "zope-"},
     "pypi-zope.": {"category": "dev-python", "transform": "zope-"},
 }
+
+# fmt: off
+CATEGORY_PRIORITY = {
+    # Core system components - highest priority
+    "sys-libs": 10,
+    "sys-apps": 11,
+    "sys-devel": 12,
+    "sys-fs": 13,
+    "sys-process": 14,
+    "sys-kernel": 15,
+    "sys-firmware": 16,
+    "sys-boot": 17,
+    "sys-auth": 18,
+    "sys-power": 19,
+    "sys-block": 20,
+    "sys-cluster": 21,
+    "sys-fabric": 22,
+
+    # Primary implementation libraries
+    "dev-libs": 30,
+    "media-libs": 31,
+    "x11-libs": 32,
+    "net-libs": 33,
+    "sci-libs": 34,
+    "gui-libs": 35,
+    "llvm-core": 36,
+    "llvm-runtimes": 37,
+
+    # Core applications and tools
+    "app-arch": 40,
+    "app-crypt": 41,
+    "app-containers": 42,
+    "app-text": 43,
+    "app-admin": 44,
+    "app-misc": 45,
+    "app-editors": 46,
+    "app-emulation": 47,
+    "dev-vcs": 48,
+    "dev-util": 49,
+    "dev-build": 50,
+    "dev-debug": 51,
+    "net-misc": 52,
+    "net-fs": 53,
+    "net-vpn": 54,
+    "net-analyzer": 55,
+
+    # Core generic language implementations
+    "dev-lang": 60,
+
+    # Secondary applications
+    "app-shells": 70,
+    "app-office": 71,
+    "app-portage": 72,
+    "app-benchmarks": 73,
+    "app-backup": 74,
+    "app-forensics": 75,
+    "app-i18n": 76,
+    "www-servers": 77,
+    "www-client": 78,
+    "net-dns": 79,
+    "net-mail": 80,
+    "net-firewall": 81,
+    "net-ftp": 82,
+    "net-im": 83,
+    "net-irc": 84,
+    "mail-client": 85,
+    "mail-filter": 86,
+    "mail-mta": 87,
+
+    # Databases and related
+    "dev-db": 90,
+
+    # Desktop environments
+    "x11-base": 100,
+    "x11-apps": 101,
+    "x11-wm": 102,
+    "x11-terms": 103,
+    "x11-drivers": 104,
+    "x11-misc": 105,
+    "x11-plugins": 106,
+    "gnome-base": 107,
+    "kde-frameworks": 108,
+    "kde-plasma": 109,
+    "kde-apps": 110,
+    "kde-misc": 111,
+    "gui-wm": 112,
+    "gui-apps": 113,
+    "lxde-base": 114,
+    "lxqt-base": 115,
+    "xfce-base": 116,
+    "xfce-extra": 117,
+    "mate-base": 118,
+    "mate-extra": 119,
+    "gnome-extra": 120,
+    "phosh-base": 121,
+
+    # Media applications
+    "media-gfx": 130,
+    "media-sound": 131,
+    "media-video": 132,
+    "media-tv": 133,
+    "media-plugins": 134,
+    "media-radio": 135,
+    "mpv-plugin": 136,
+
+    # Science applications
+    "sci-mathematics": 140,
+    "sci-physics": 141,
+    "sci-chemistry": 142,
+    "sci-astronomy": 143,
+    "sci-biology": 144,
+    "sci-electronics": 145,
+    "sci-geosciences": 146,
+    "sci-visualization": 147,
+    "sci-calculators": 148,
+    "sci-misc": 149,
+    "sci-ml": 150,
+
+    # Games
+    "games-emulation": 160,
+    "games-engines": 161,
+    "games-action": 162,
+    "games-arcade": 163,
+    "games-board": 164,
+    "games-fps": 165,
+    "games-rpg": 166,
+    "games-strategy": 167,
+    "games-puzzle": 168,
+    "games-simulation": 169,
+    "games-sports": 170,
+    "games-roguelike": 171,
+    "games-mud": 172,
+    "games-server": 173,
+    "games-util": 174,
+    "games-misc": 175,
+    "games-kids": 176,
+
+    # Miscellaneous
+    "app-accessibility": 180,
+    "app-antivirus": 181,
+    "app-cdr": 182,
+    "app-eselect": 183,
+    "app-laptop": 184,
+    "app-metrics": 185,
+    "app-mobilephone": 186,
+    "app-officeext": 187,
+    "app-pda": 188,
+    "net-p2p": 189,
+    "net-news": 190,
+    "net-nntp": 191,
+    "net-print": 192,
+    "net-proxy": 193,
+    "net-voip": 194,
+    "net-wireless": 195,
+    "net-client": 196,
+    "net-nds": 197,
+    "net-dialup": 198,
+    "sec-policy": 199,
+    "www-misc": 200,
+    "www-apache": 201,
+    "www-apps": 202,
+    "www-plugins": 203,
+    "gnustep-apps": 204,
+    "gnustep-base": 205,
+    "gnustep-libs": 206,
+    "dev-embedded": 207,
+    "dev-games": 208,
+    "dev-gap": 209,
+    "dev-tex": 210,
+    "dev-texlive": 211,
+
+    # Language-specific bindings and packages (lowest priority)
+    "dev-cpp": 300,
+    "dev-tcltk": 310,
+    "dev-dotnet": 320,
+    "dev-java": 330,
+    "dev-python": 340,
+    "dev-ruby": 350,
+    "dev-perl": 360,
+    "dev-php": 370,
+    "dev-go": 380,
+    "dev-haskell": 390,
+    "dev-lua": 400,
+    "dev-lisp": 410,
+    "dev-scheme": 420,
+    "dev-ml": 430,
+    "dev-erlang": 440,
+    "dev-elixir": 450,
+    "dev-nim": 460,
+    "dev-crystal": 470,
+    "dev-zig": 480,
+    "dev-ada": 490,
+    "dev-hare": 500,
+    "perl-core": 510,
+}
+# fmt: on
 
 
 def find_manual_override(pkg_name: str) -> Optional[Dict]:
@@ -273,18 +473,32 @@ class PackageMatcher:
         return pkg_name.lower() in self.lowercase_pkg_names
 
 
-# XXX: will create a proper implementation later
 def select_best_category(categories: List[str]) -> str:
     """
-    Select the best category for a package from multiple matches.
+    Select the best category for a package based on a predefined priority
+    system.
+
+    This function determines which Gentoo category should be preferred when
+    multiple matching categories exist. It prioritizes core system categories
+    over language bindings.
 
     Args:
         categories: List of matching categories.
 
     Returns:
-        The best category, or None if no categories are provided.
+        The highest priority category, or empty string if no categories
+        provided.
     """
-    return sorted(categories)[0] if categories else ""
+    if not categories:
+        return ""
+
+    if len(categories) == 1:
+        return categories[0]
+
+    return min(
+        categories,
+        key=lambda x: CATEGORY_PRIORITY.get(x, DEFAULT_LOWEST_PRIORITY),
+    )
 
 
 def calculate_confidence(matching_categories: List[str]) -> float:
