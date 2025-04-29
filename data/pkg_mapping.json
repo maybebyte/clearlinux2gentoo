@@ -6386,10 +6386,10 @@
   },
   "boinc-client": {
     "all_matches": [
-      "net-misc/boinc"
+      "sci-misc/boinc"
     ],
     "confidence": 1.0,
-    "gentoo_match": "net-misc/boinc"
+    "gentoo_match": "sci-misc/boinc"
   },
   "bolt": {
     "all_matches": [
@@ -9680,10 +9680,10 @@
   },
   "google-benchmark": {
     "all_matches": [
-      "dev-cpp/google-benchmark"
+      "dev-cpp/benchmark"
     ],
     "confidence": 1.0,
-    "gentoo_match": "dev-cpp/google-benchmark"
+    "gentoo_match": "dev-cpp/benchmark"
   },
   "google-cloud-cpp": {
     "all_matches": [
@@ -9822,10 +9822,10 @@
   },
   "graphite": {
     "all_matches": [
-      "dev-libs/graphite2"
+      "media-gfx/graphite2"
     ],
     "confidence": 1.0,
-    "gentoo_match": "dev-libs/graphite2"
+    "gentoo_match": "media-gfx/graphite2"
   },
   "graphviz": {
     "all_matches": [
@@ -13075,10 +13075,10 @@
   },
   "libftdi1": {
     "all_matches": [
-      "dev-libs/libftdi"
+      "dev-embedded/libftdi"
     ],
     "confidence": 1.0,
-    "gentoo_match": "dev-libs/libftdi"
+    "gentoo_match": "dev-embedded/libftdi"
   },
   "libgbinder": {
     "all_matches": [],
@@ -15969,10 +15969,10 @@
   },
   "not-ffmpeg": {
     "all_matches": [
-      "media-libs/ffmpeg"
+      "media-video/ffmpeg"
     ],
     "confidence": 1.0,
-    "gentoo_match": "media-libs/ffmpeg"
+    "gentoo_match": "media-video/ffmpeg"
   },
   "notmuch": {
     "all_matches": [
@@ -30327,10 +30327,10 @@
   },
   "raptor2": {
     "all_matches": [
-      "dev-libs/raptor"
+      "media-libs/raptor"
     ],
     "confidence": 1.0,
-    "gentoo_match": "dev-libs/raptor"
+    "gentoo_match": "media-libs/raptor"
   },
   "rasdaemon": {
     "all_matches": [
