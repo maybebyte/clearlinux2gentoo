@@ -2,7 +2,8 @@
 Build options processor and compiler configuration generator.
 Creates compiler configuration files and processes package-specific flags.
 
-This module converts Clear Linux build options to Gentoo compiler configurations.
+This module converts Clear Linux build options to Gentoo compiler
+configurations.
 It reads options.conf files from Clear Linux repositories and generates
 appropriate Gentoo package.env entries based on mapping data.
 """
@@ -315,7 +316,7 @@ def process_package_env_entries(
 
 
 def get_gentoo_package_name(
-    clear_pkg_name: str, pkg_mapping: GentooPackageMapping
+    clear_pkg_name: Union[str, int, bool], pkg_mapping: GentooPackageMapping
 ) -> Optional[str]:
     """
     Get the corresponding Gentoo package name for a Clear Linux package.
