@@ -26,31 +26,20 @@ def get_packages() -> Dict[str, List[str]]:
     """Retrieve all packages from the Portage database.
 
     Returns:
-        Dict[str, List[str]]: A dictionary mapping categories to lists of
-        packages.
-
-    Raises:
-        RuntimeError: If the Portage database is not accessible or empty.
+        Dict[str, List[str]]: A dictionary mapping categories to lists of packages.
     """
     packages = defaultdict(list)
+
     try:
         all_packages = portage.db[portage.root]["porttree"].dbapi.cp_all()
-        if not all_packages:
-            raise RuntimeError("No packages found in Portage database.")
 
         for cp in all_packages:
-            if "/" not in cp:
-                continue
-            try:
+            if "/" in cp:
                 category, pkg = cp.split("/", 1)
                 packages[category].append(pkg)
-            except ValueError:
-                print(
-                    f"Warning: Skipping malformed package entry: {cp}",
-                    file=sys.stderr,
-                )
-    except (KeyError, AttributeError) as e:
-        raise RuntimeError(f"Cannot access Portage database: {e}") from e
+    except Exception as e:
+        print(f"Error accessing Portage database: {e}", file=sys.stderr)
+        sys.exit(1)
 
     return packages
 
@@ -61,19 +50,17 @@ def write_packages(packages: Dict[str, List[str]], output_file: str) -> None:
     Args:
         packages: Dictionary mapping categories to lists of packages.
         output_file: Path to the output file.
-
-    Raises:
-        IOError: If the output file cannot be written to.
     """
-    try:
-        os.makedirs(os.path.dirname(output_file), exist_ok=True)
-    except PermissionError as e:
-        raise IOError(f"Cannot create output directory: {e}") from e
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
-    with open(output_file, "w", encoding="utf-8") as f:
-        for category, pkgs in sorted(packages.items()):
-            for pkg in sorted(pkgs):
-                f.write(f"{category}/{pkg}\n")
+    try:
+        with open(output_file, "w", encoding="utf-8") as f:
+            for category, pkgs in sorted(packages.items()):
+                for pkg in sorted(pkgs):
+                    f.write(f"{category}/{pkg}\n")
+    except IOError as e:
+        print(f"Error writing to output file: {e}", file=sys.stderr)
+        sys.exit(1)
 
 
 def parse_arguments():
@@ -101,21 +88,16 @@ def main() -> int:
         int: Exit code (0 for success, 1 for errors).
     """
     args = parse_arguments()
-    output_file = args.output
 
-    try:
-        packages = get_packages()
-        if not packages:
-            print("Warning: No packages found to write", file=sys.stderr)
-            return 0
-
-        write_packages(packages, output_file)
-        print(f"Successfully wrote package list to {output_file}")
+    packages = get_packages()
+    if not packages:
+        print("Warning: No packages found to write", file=sys.stderr)
         return 0
-    except (IOError, RuntimeError) as e:
-        print(f"Error: {e}", file=sys.stderr)
-        return 1
+
+    write_packages(packages, args.output)
+    print(f"Successfully wrote package list to {args.output}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
