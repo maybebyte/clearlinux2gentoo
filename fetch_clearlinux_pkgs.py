@@ -28,7 +28,6 @@ def get_clearlinux_packages() -> List[str]:
         url = f"https://api.github.com/orgs/clearlinux-pkgs/repos?per_page={per_page}&page={page}"
         response = requests.get(url, timeout=10)
 
-        # Check for rate limiting
         remaining = int(response.headers.get("X-RateLimit-Remaining", 0))
         reset_time = int(response.headers.get("X-RateLimit-Reset", 0))
 
@@ -37,7 +36,7 @@ def get_clearlinux_packages() -> List[str]:
         if response.status_code == 403 and remaining == 0:
             wait_time = (
                 max(reset_time - time.time(), 0) + 5
-            )  # Add 5 seconds buffer
+            )
             reset_datetime = datetime.fromtimestamp(reset_time)
             print(
                 f"Rate limit exceeded. Waiting until {reset_datetime.strftime('%H:%M:%S')} ({int(wait_time/60)} min {int(wait_time%60)} sec)"
@@ -69,7 +68,6 @@ def get_clearlinux_packages() -> List[str]:
         if remaining > 10:
             time.sleep(0.5)
 
-    # Save to file for future use
     with open(JSON_OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(packages, f, indent=2)
 

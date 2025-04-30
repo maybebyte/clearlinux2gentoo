@@ -11,14 +11,12 @@ import argparse
 from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, List, Any
 
-# Default paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 DEFAULT_MAPPING_FILE = os.path.join(DATA_DIR, "pkg_mapping.json")
 DEFAULT_OUTPUT_DIR = os.path.join(BASE_DIR, "clearlinux-repos")
 DEFAULT_MAX_WORKERS = 5
 
-# GitHub organization URL
 GITHUB_ORG_URL = "https://github.com/clearlinux-pkgs"
 
 
@@ -57,16 +55,13 @@ def clone_repository(pkg_name: str, output_dir: str) -> bool:
     repo_url = f"{GITHUB_ORG_URL}/{pkg_name}"
     repo_dir = os.path.join(output_dir, pkg_name)
 
-    # Skip if directory already exists
     if os.path.exists(repo_dir):
         print(f"Skipping {pkg_name}: directory already exists")
         return False
 
     try:
-        # Create parent directory if it doesn't exist
         os.makedirs(output_dir, exist_ok=True)
 
-        # Clone the repository
         print(f"Cloning {pkg_name}...")
         subprocess.run(
             ["git", "clone", repo_url, repo_dir],
@@ -98,10 +93,8 @@ def clone_repositories(
     """
     results = {}
 
-    # Create output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
 
-    # Clone repositories in parallel
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {
             executor.submit(clone_repository, pkg_name, output_dir): pkg_name
@@ -154,47 +147,37 @@ def main():
 
     args = parser.parse_args()
 
-    # Load mapping data
     mapping_data = load_mapping_data(args.mapping_file)
 
-    # Filter to only packages that have a Gentoo mapping
     pkg_names = [
         name
         for name, mapping in mapping_data.items()
-        if mapping.get(
-            "gentoo_match"
-        )  # Only include if gentoo_match exists and is not empty/null
+        if mapping.get("gentoo_match")
     ]
     print(f"Found {len(pkg_names)} packages with Gentoo mappings")
 
-    # Apply additional filter if provided
     if args.filter:
         pkg_names = [name for name in pkg_names if args.filter in name]
         print(
             f"Filtered to {len(pkg_names)} packages containing '{args.filter}'"
         )
 
-    # Sort package names for consistent output
     pkg_names.sort()
 
-    # Dry run mode - just print packages
     if args.dry_run:
         print(f"Would clone {len(pkg_names)} repositories:")
         for pkg_name in pkg_names:
             print(f"  {pkg_name}")
         return
 
-    # Clone repositories
     print(f"Cloning {len(pkg_names)} repositories to {args.output_dir}...")
     results = clone_repositories(pkg_names, args.output_dir, args.max_workers)
 
-    # Print summary
     success_count = sum(1 for success in results.values() if success)
     print(
         f"\nSummary: Successfully cloned {success_count} out of {len(pkg_names)} repositories"
     )
 
-    # List failed repositories
     failed = [pkg_name for pkg_name, success in results.items() if not success]
     if failed:
         print(f"\nFailed to clone {len(failed)} repositories:")
