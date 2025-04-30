@@ -7,6 +7,7 @@ based on package names from mapping JSON file
 import json
 import os
 import subprocess
+import sys
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, List, Any
@@ -35,10 +36,10 @@ def load_mapping_data(mapping_file: str) -> Dict[str, Any]:
             return json.load(f)
     except FileNotFoundError:
         print(f"Error: Mapping file '{mapping_file}' not found")
-        exit(1)
+        sys.exit(1)
     except json.JSONDecodeError:
         print(f"Error: Invalid JSON in mapping file '{mapping_file}'")
-        exit(1)
+        sys.exit(1)
 
 
 def clone_repository(pkg_name: str, output_dir: str) -> bool:
