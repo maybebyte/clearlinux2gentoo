@@ -18,10 +18,10 @@ from typing import Dict, Union, List, Tuple, Optional
 
 
 # Path constants
-DEFAULT_MAPPING_FILE = "./data/pkg_mapping.json"
-DEFAULT_PORTAGE_ENV_DIR = "./etc/portage/env"
-DEFAULT_PACKAGE_ENV_DIR = "./etc/portage/package.env"
-DEFAULT_CLEARLINUX_REPOS_DIR = "./clearlinux-repos"
+DEFAULT_MAPPING_FILE = os.path.join(".", "data", "pkg_mapping.json")
+DEFAULT_PORTAGE_ENV_DIR = os.path.join(".", "etc", "portage", "env")
+DEFAULT_PACKAGE_ENV_DIR = os.path.join(".", "etc", "portage", "package.env")
+DEFAULT_CLEARLINUX_REPOS_DIR = os.path.join(".", "clearlinux-repos")
 
 # Type aliases
 ConfigDict = Dict[str, Dict[str, Union[str, bool, int]]]
