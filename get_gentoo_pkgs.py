@@ -58,7 +58,7 @@ def write_packages(packages: Dict[str, List[str]], output_file: str) -> None:
             for category, pkgs in sorted(packages.items()):
                 for pkg in sorted(pkgs):
                     f.write(f"{category}/{pkg}\n")
-    except IOError as e:
+    except OSError as e:
         print(f"Error writing to output file: {e}", file=sys.stderr)
         sys.exit(1)
 
@@ -92,7 +92,7 @@ def main() -> int:
     packages = get_packages()
     if not packages:
         print("Warning: No packages found to write", file=sys.stderr)
-        return 0
+        return 1
 
     write_packages(packages, args.output)
     print(f"Successfully wrote package list to {args.output}")
