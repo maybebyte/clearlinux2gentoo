@@ -10,6 +10,7 @@ It reads options.conf files from Clear Linux repositories and generates
 appropriate Gentoo package.env entries based on mapping data.
 """
 
+import argparse
 import configparser
 import json
 import os
@@ -17,17 +18,50 @@ import sys
 from typing import Dict, Union, List, Tuple, Optional
 
 
-# Path constants
-DEFAULT_MAPPING_FILE = os.path.join(".", "data", "pkg_mapping.json")
-DEFAULT_PORTAGE_ENV_DIR = os.path.join(".", "etc", "portage", "env")
-DEFAULT_PACKAGE_ENV_DIR = os.path.join(".", "etc", "portage", "package.env")
-DEFAULT_CLEARLINUX_REPOS_DIR = os.path.join(".", "clearlinux-repos")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Type aliases
+DEFAULT_MAPPING_FILE = os.path.join(BASE_DIR, "data", "pkg_mapping.json")
+DEFAULT_PORTAGE_ENV_DIR = os.path.join(BASE_DIR, "etc", "portage", "env")
+DEFAULT_PACKAGE_ENV_DIR = os.path.join(
+    BASE_DIR, "etc", "portage", "package.env"
+)
+DEFAULT_CLEARLINUX_REPOS_DIR = os.path.join(BASE_DIR, "clearlinux-repos")
+
 ConfigDict = Dict[str, Dict[str, Union[str, bool, int]]]
 GentooPackageMapping = Dict[str, Dict]
 CompilerConfigFiles = Dict[str, List[str]]
 FlagMapping = List[Tuple[str, str, str, bool]]
+
+
+def parse_args():
+    """
+    Parse command-line arguments to allow configuration of paths.
+
+    Returns:
+        Parsed command-line arguments
+    """
+    parser = argparse.ArgumentParser(description="Build options processor")
+    parser.add_argument(
+        "--mapping-file",
+        default=DEFAULT_MAPPING_FILE,
+        help="Path to package mapping JSON file",
+    )
+    parser.add_argument(
+        "--portage-env-dir",
+        default=DEFAULT_PORTAGE_ENV_DIR,
+        help="Path to Portage env directory",
+    )
+    parser.add_argument(
+        "--package-env-dir",
+        default=DEFAULT_PACKAGE_ENV_DIR,
+        help="Path to package.env directory",
+    )
+    parser.add_argument(
+        "--repos-dir",
+        default=DEFAULT_CLEARLINUX_REPOS_DIR,
+        help="Path to ClearLinux repositories",
+    )
+    return parser.parse_args()
 
 
 def load_package_mapping(
@@ -267,7 +301,9 @@ def get_flag_mappings() -> FlagMapping:
 
 
 def process_package_env_entries(
-    options_conf_path: str, pkg_mapping: GentooPackageMapping
+    options_conf_path: str,
+    pkg_mapping: GentooPackageMapping,
+    package_env_dir: str,
 ) -> bool:
     """
     Process an options.conf file and create package.env entries for Gentoo.
@@ -275,6 +311,7 @@ def process_package_env_entries(
     Args:
         options_conf_path: Path to the options.conf file
         pkg_mapping: Dictionary mapping Clear Linux package names to Gentoo package info
+        package_env_dir: Directory to store the generated package.env files
 
     Returns:
         True if processing was successful, False otherwise
@@ -297,7 +334,7 @@ def process_package_env_entries(
         if not gentoo_pkg_name:
             return False
 
-        os.makedirs(DEFAULT_PACKAGE_ENV_DIR, exist_ok=True)
+        ensure_directory_exists(package_env_dir)
 
         for flag, filename, conf_file, invert in get_flag_mappings():
             flag_value = config["autospec"].get(flag, False)
@@ -305,7 +342,7 @@ def process_package_env_entries(
                 flag_value = not flag_value
 
             if flag_value:
-                file_path = os.path.join(DEFAULT_PACKAGE_ENV_DIR, filename)
+                file_path = os.path.join(package_env_dir, filename)
 
                 with open(file_path, "a", encoding="utf-8") as env_file:
                     env_file.write(f"{gentoo_pkg_name} {conf_file}\n")
@@ -330,23 +367,23 @@ def get_gentoo_package_name(
     Returns:
         Gentoo package name or None if not found
     """
-    if clear_pkg_name not in pkg_mapping:
-        sys.stderr.write(f"No mapping found for package: {clear_pkg_name}\n")
+    clear_pkg_str = str(clear_pkg_name)
+
+    if clear_pkg_str not in pkg_mapping:
+        sys.stderr.write(f"No mapping found for package: {clear_pkg_str}\n")
         return None
 
-    gentoo_pkg_info = pkg_mapping[clear_pkg_name]
+    gentoo_pkg_info = pkg_mapping[clear_pkg_str]
     gentoo_pkg_name = gentoo_pkg_info.get("gentoo_match", "")
 
     if not gentoo_pkg_name:
-        sys.stderr.write(f"No Gentoo package match for: {clear_pkg_name}\n")
+        sys.stderr.write(f"No Gentoo package match for: {clear_pkg_str}\n")
         return None
 
     return gentoo_pkg_name
 
 
-def clear_package_env_files(
-    package_env_dir: str
-) -> bool:
+def clear_package_env_files(package_env_dir: str) -> bool:
     """
     Clear all package.env files to start fresh.
 
@@ -358,6 +395,7 @@ def clear_package_env_files(
     """
     try:
         if not os.path.exists(package_env_dir):
+            ensure_directory_exists(package_env_dir)
             return True
 
         flag_mappings = get_flag_mappings()
@@ -379,27 +417,40 @@ def main():
     """
     Main function to create compiler configs and process options.conf files.
 
-    1. Creates compiler configuration files
-    2. Loads package mapping data
-    3. Processes options.conf files to generate package.env entries
+    1. Parses command-line arguments
+    2. Creates compiler configuration files
+    3. Loads package mapping data
+    4. Processes options.conf files to generate package.env entries
     """
-    if not write_compiler_configs(DEFAULT_PORTAGE_ENV_DIR):
+    args = parse_args()
+
+    if not write_compiler_configs(args.portage_env_dir):
         sys.stderr.write(
             "Failed to create some compiler configuration files\n"
         )
         sys.exit(1)
 
-    pkg_mapping = load_package_mapping(DEFAULT_MAPPING_FILE)
+    pkg_mapping = load_package_mapping(args.mapping_file)
     if not pkg_mapping:
         sys.stderr.write("Failed to load package mapping data\n")
         sys.exit(1)
 
-    options_conf_files = find_options_conf_files(DEFAULT_CLEARLINUX_REPOS_DIR)
+    options_conf_files = find_options_conf_files(args.repos_dir)
+
+    if not clear_package_env_files(args.package_env_dir):
+        sys.stderr.write("Failed to clear package.env files\n")
+        sys.exit(1)
 
     processed_count = 0
     for options_conf_path in options_conf_files:
-        if process_package_env_entries(options_conf_path, pkg_mapping):
+        if process_package_env_entries(
+            options_conf_path, pkg_mapping, args.package_env_dir
+        ):
             processed_count += 1
+
+    print(
+        f"Successfully processed {processed_count} out of {len(options_conf_files)} options.conf files"
+    )
 
 
 if __name__ == "__main__":
