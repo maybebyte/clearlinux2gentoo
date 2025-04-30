@@ -91,7 +91,9 @@ def clone_repository(pkg_name: str, output_dir: str) -> bool:
         )
 
         with open(
-            os.path.join(repo_dir, ".git/info/sparse-checkout"), "w"
+            os.path.join(repo_dir, ".git/info/sparse-checkout"),
+            "w",
+            encoding="utf-8",
         ) as f:
             f.write("options.conf\n")
 
