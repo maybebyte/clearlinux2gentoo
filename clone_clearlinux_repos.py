@@ -106,14 +106,22 @@ def clone_repositories(
             pkg_name = futures[future]
             try:
                 results[pkg_name] = future.result()
-            except Exception as e:
-                print(f"Exception when cloning {pkg_name}: {e}")
+            except (subprocess.SubprocessError, OSError) as e:
+                print(f"Error when cloning {pkg_name}: {e}")
                 results[pkg_name] = False
 
     return results
 
 
 def main():
+    """
+    Main entry point for the repository cloning script.
+
+    Parses command line arguments, loads package mapping data, filters packages
+    based on Gentoo mappings and optional name filtering, and either performs
+    a dry run or clones the repositories in parallel. Provides a summary of
+    successful clones and failures upon completion.
+    """
     parser = argparse.ArgumentParser(
         description="Clone GitHub repositories from clearlinux-pkgs based on package mapping"
     )
