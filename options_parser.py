@@ -363,9 +363,8 @@ def clear_package_env_files(
 
         for filename in filenames:
             file_path = os.path.join(package_env_dir, filename)
-            if os.path.exists(file_path):
-                with open(file_path, "w", encoding="utf-8"):
-                    pass
+            with open(file_path, "w", encoding="utf-8"):
+                pass
 
         return True
 
