@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Build options processor and compiler configuration generator.
 Creates compiler configuration files and processes package-specific flags.

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Package Mapper - Maps Clear Linux packages to Gentoo packages using
 case-insensitive name matching
