@@ -11,13 +11,10 @@ from typing import Dict, List, Optional, Set
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = "data"
-CLEARLINUX_PKG_FILE = os.path.join(BASE_DIR, DATA_DIR, "clearlinux_pkgs.txt")
-GENTOO_PKG_FILE = os.path.join(BASE_DIR, DATA_DIR, "gentoo_pkgs.txt")
-OUTPUT_FILE = os.path.join(BASE_DIR, DATA_DIR, "pkg_mapping.json")
-
-# TODO: resolve bug that causes other packages to be listed, e.g. mvn-xz
-# and jdk-xz now get listed if I map xz to xz-utils
+DATA_DIR = os.path.join(BASE_DIR, "data")
+CLEARLINUX_PKG_FILE = os.path.join(DATA_DIR, "clearlinux_pkgs.txt")
+GENTOO_PKG_FILE = os.path.join(DATA_DIR, "gentoo_pkgs.txt")
+OUTPUT_FILE = os.path.join(DATA_DIR, "pkg_mapping.json")
 
 # This is for the category prioritization system
 DEFAULT_LOWEST_PRIORITY = 999
@@ -591,9 +588,10 @@ def try_map_package(
     Returns:
         Mapping result dictionary or None if no match.
     """
-    override_match = find_manual_override(pkg_name)
-    if override_match:
-        return override_match
+    if required_category is None:
+        override_match = find_manual_override(pkg_name)
+        if override_match:
+            return override_match
 
     if not matcher.package_exists(pkg_name):
         return None
