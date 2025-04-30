@@ -12,8 +12,10 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, List, Any
 
 # Default paths
-DEFAULT_MAPPING_FILE = "data/pkg_mapping.json"
-DEFAULT_OUTPUT_DIR = "clearlinux-repos"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+DEFAULT_MAPPING_FILE = os.path.join(DATA_DIR, "pkg_mapping.json")
+DEFAULT_OUTPUT_DIR = os.path.join(BASE_DIR, "clearlinux-repos")
 DEFAULT_MAX_WORKERS = 5
 
 # GitHub organization URL

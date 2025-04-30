@@ -8,10 +8,13 @@ case-insensitive name matching
 import json
 from collections import defaultdict
 from typing import Dict, List, Optional, Set
+import os
 
-CLEARLINUX_PKG_FILE = "data/clearlinux_pkgs.txt"
-GENTOO_PKG_FILE = "data/gentoo_pkgs.txt"
-OUTPUT_FILE = "data/pkg_mapping.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = "data"
+CLEARLINUX_PKG_FILE = os.path.join(BASE_DIR, DATA_DIR, "clearlinux_pkgs.txt")
+GENTOO_PKG_FILE = os.path.join(BASE_DIR, DATA_DIR, "gentoo_pkgs.txt")
+OUTPUT_FILE = os.path.join(BASE_DIR, DATA_DIR, "pkg_mapping.json")
 
 # TODO: resolve bug that causes other packages to be listed, e.g. mvn-xz
 # and jdk-xz now get listed if I map xz to xz-utils

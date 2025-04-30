@@ -19,12 +19,12 @@ from typing import Dict, Union, List, Tuple, Optional
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+ETC_DIR = os.path.join(BASE_DIR, "etc")
 
-DEFAULT_MAPPING_FILE = os.path.join(BASE_DIR, "data", "pkg_mapping.json")
-DEFAULT_PORTAGE_ENV_DIR = os.path.join(BASE_DIR, "etc", "portage", "env")
-DEFAULT_PACKAGE_ENV_DIR = os.path.join(
-    BASE_DIR, "etc", "portage", "package.env"
-)
+DEFAULT_MAPPING_FILE = os.path.join(DATA_DIR, "pkg_mapping.json")
+DEFAULT_PORTAGE_ENV_DIR = os.path.join(ETC_DIR, "portage", "env")
+DEFAULT_PACKAGE_ENV_DIR = os.path.join(ETC_DIR, "portage", "package.env")
 DEFAULT_CLEARLINUX_REPOS_DIR = os.path.join(BASE_DIR, "clearlinux-repos")
 
 ConfigDict = Dict[str, Dict[str, Union[str, bool, int]]]

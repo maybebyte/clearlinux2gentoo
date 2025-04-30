@@ -9,7 +9,9 @@ import argparse
 from collections import defaultdict
 from typing import Dict, List
 
-DEFAULT_OUTPUT_FILE = os.path.join("data", "gentoo_pkgs.txt")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+DEFAULT_OUTPUT_FILE = os.path.join(DATA_DIR, "gentoo_pkgs.txt")
 
 try:
     import portage

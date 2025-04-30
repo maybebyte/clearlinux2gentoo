@@ -2,11 +2,20 @@
 
 import time
 import json
+import os
 from datetime import datetime
+import argparse
+from typing import List
+
 import requests
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+DEFAULT_OUTPUT_FILE = os.path.join(DATA_DIR, "clearlinux_pkgs.txt")
+JSON_OUTPUT_FILE = os.path.join(DATA_DIR, "clearlinux_packages.json")
 
-def get_clearlinux_packages():
+
+def get_clearlinux_packages() -> List[str]:
     packages = []
     page = 1
     per_page = 100
@@ -61,15 +70,34 @@ def get_clearlinux_packages():
             time.sleep(0.5)
 
     # Save to file for future use
-    with open("data/clearlinux_packages.json", "w", encoding="utf-8") as f:
+    with open(JSON_OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(packages, f, indent=2)
 
     print(
-        f"Completed. Retrieved {len(packages)} packages, saved to data/clearlinux_packages.json"
+        f"Completed. Retrieved {len(packages)} packages, saved to {JSON_OUTPUT_FILE}"
     )
     return packages
 
 
+def save_packages_to_file(packages: List[str], output_file: str) -> None:
+    """Save packages to a text file, one per line."""
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    with open(output_file, "w", encoding="utf-8") as f:
+        for pkg in sorted(packages):
+            f.write(f"{pkg}\n")
+    print(f"Package list saved to {output_file}")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Fetch Clear Linux packages")
+    parser.add_argument(
+        "-o", "--output", default=DEFAULT_OUTPUT_FILE, help="Output file path"
+    )
+    args = parser.parse_args()
+
+    packages = get_clearlinux_packages()
+    save_packages_to_file(packages, args.output)
+
+
 if __name__ == "__main__":
-    pkgs = get_clearlinux_packages()
-    print(pkgs)
+    main()
