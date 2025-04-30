@@ -44,7 +44,8 @@ def load_mapping_data(mapping_file: str) -> Dict[str, Any]:
 
 def clone_repository(pkg_name: str, output_dir: str) -> bool:
     """
-    Clone a repository for a specific package.
+    Clone a repository for a specific package using sparse checkout.
+    Only retrieves options.conf file to minimize data transfer.
 
     Args:
         pkg_name: Package name (used as repository name)
@@ -61,20 +62,90 @@ def clone_repository(pkg_name: str, output_dir: str) -> bool:
         return False
 
     try:
-        os.makedirs(output_dir, exist_ok=True)
+        os.makedirs(repo_dir, exist_ok=True)
 
-        print(f"Cloning {pkg_name}...")
+        print(f"Cloning {pkg_name} (sparse checkout)...")
+
         subprocess.run(
-            ["git", "clone", repo_url, repo_dir],
+            ["git", "init"],
+            cwd=repo_dir,
             check=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
+
+        subprocess.run(
+            ["git", "remote", "add", "origin", repo_url],
+            cwd=repo_dir,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
+        subprocess.run(
+            ["git", "config", "core.sparseCheckout", "true"],
+            cwd=repo_dir,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
+        with open(
+            os.path.join(repo_dir, ".git/info/sparse-checkout"), "w"
+        ) as f:
+            f.write("options.conf\n")
+
+        ls_remote_process = subprocess.run(
+            ["git", "ls-remote", "--symref", "origin", "HEAD"],
+            cwd=repo_dir,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+
+        default_branch = "master"
+        for line in ls_remote_process.stdout.splitlines():
+            if "ref:" in line and "HEAD" in line:
+                ref_part = line.split("\t")[0].strip()
+                if "refs/heads/" in ref_part:
+                    default_branch = ref_part.split("refs/heads/")[1]
+                    break
+
+        print(f"Using default branch: {default_branch} for {pkg_name}")
+
+        subprocess.run(
+            [
+                "git",
+                "fetch",
+                "--depth",
+                "1",
+                "--filter=blob:none",
+                "origin",
+                default_branch,
+            ],
+            cwd=repo_dir,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
+        subprocess.run(
+            ["git", "checkout", default_branch],
+            cwd=repo_dir,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
         return True
     except subprocess.CalledProcessError as e:
         print(
             f"Failed to clone {pkg_name}: {e.stderr.decode('utf-8').strip()}"
         )
+        return False
+    except OSError as e:
+        print(f"OS error when cloning {pkg_name}: {e}")
         return False
 
 
