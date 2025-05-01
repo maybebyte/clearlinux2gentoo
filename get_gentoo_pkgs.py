@@ -84,10 +84,8 @@ def parse_arguments():
 
 
 def main():
-    """Entry point of the script, handles package extraction and writing.
-
-    Returns:
-        int: Exit code (0 for success, 1 for errors).
+    """
+    Entry point of the script, handles package extraction and writing.
     """
     args = parse_arguments()
 
