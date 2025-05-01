@@ -9,6 +9,7 @@ import os
 import subprocess
 import sys
 import argparse
+import signal
 from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, List, Any
 
@@ -19,6 +20,30 @@ DEFAULT_OUTPUT_DIR = os.path.join(BASE_DIR, "clearlinux-repos")
 DEFAULT_MAX_WORKERS = 5
 
 GITHUB_ORG_URL = "https://github.com/clearlinux-pkgs"
+
+# Global variables for interrupt handling
+executor = None
+futures_to_cancel = set()
+
+
+def signal_handler(signum, _frame):
+    """Handle interruption signals cleanly"""
+    print(f"\nReceived signal {signum}, gracefully shutting down...")
+
+    global executor, futures_to_cancel
+    if executor:
+        for future in futures_to_cancel:
+            if not future.done():
+                future.cancel()
+
+        # Python 3.9+ has cancel_futures parameter
+        if sys.version_info >= (3, 9):
+            executor.shutdown(wait=False, cancel_futures=True)
+        else:
+            executor.shutdown(wait=False)
+
+    print("Shutdown complete. Exiting...")
+    sys.exit(0)
 
 
 def load_mapping_data(mapping_file: str) -> Dict[str, Any]:
@@ -40,6 +65,31 @@ def load_mapping_data(mapping_file: str) -> Dict[str, Any]:
     except json.JSONDecodeError:
         print(f"Error: Invalid JSON in mapping file '{mapping_file}'")
         sys.exit(1)
+
+
+def run_command(
+    cmd: List[str], cwd: str, text: bool = False
+) -> subprocess.CompletedProcess:
+    """
+    Run a subprocess command with proper signal handling.
+
+    Args:
+        cmd: Command to run as a list of strings
+        cwd: Working directory
+        text: Whether to return text output instead of bytes
+
+    Returns:
+        CompletedProcess instance
+    """
+    return subprocess.run(
+        cmd,
+        cwd=cwd,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=text,
+        start_new_session=True,
+    )
 
 
 def clone_repository(pkg_name: str, output_dir: str) -> bool:
@@ -66,29 +116,9 @@ def clone_repository(pkg_name: str, output_dir: str) -> bool:
 
         print(f"Cloning {pkg_name} (sparse checkout)...")
 
-        subprocess.run(
-            ["git", "init"],
-            cwd=repo_dir,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-
-        subprocess.run(
-            ["git", "remote", "add", "origin", repo_url],
-            cwd=repo_dir,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-
-        subprocess.run(
-            ["git", "config", "core.sparseCheckout", "true"],
-            cwd=repo_dir,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
+        run_command(["git", "init"], repo_dir)
+        run_command(["git", "remote", "add", "origin", repo_url], repo_dir)
+        run_command(["git", "config", "core.sparseCheckout", "true"], repo_dir)
 
         with open(
             os.path.join(repo_dir, ".git/info/sparse-checkout"),
@@ -97,12 +127,9 @@ def clone_repository(pkg_name: str, output_dir: str) -> bool:
         ) as f:
             f.write("options.conf\n")
 
-        ls_remote_process = subprocess.run(
+        ls_remote_process = run_command(
             ["git", "ls-remote", "--symref", "origin", "HEAD"],
-            cwd=repo_dir,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            repo_dir,
             text=True,
         )
 
@@ -116,7 +143,7 @@ def clone_repository(pkg_name: str, output_dir: str) -> bool:
 
         print(f"Using default branch: {default_branch} for {pkg_name}")
 
-        subprocess.run(
+        run_command(
             [
                 "git",
                 "fetch",
@@ -126,25 +153,19 @@ def clone_repository(pkg_name: str, output_dir: str) -> bool:
                 "origin",
                 default_branch,
             ],
-            cwd=repo_dir,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            repo_dir,
         )
 
-        subprocess.run(
-            ["git", "checkout", default_branch],
-            cwd=repo_dir,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
+        run_command(["git", "checkout", default_branch], repo_dir)
 
         return True
     except subprocess.CalledProcessError as e:
-        print(
-            f"Failed to clone {pkg_name}: {e.stderr.decode('utf-8').strip()}"
+        stderr = (
+            e.stderr.decode("utf-8").strip()
+            if hasattr(e.stderr, "decode")
+            else str(e.stderr)
         )
+        print(f"Failed to clone {pkg_name}: {stderr}")
         return False
     except OSError as e:
         print(f"OS error when cloning {pkg_name}: {e}")
@@ -155,7 +176,7 @@ def clone_repositories(
     pkg_names: List[str], output_dir: str, max_workers: int
 ) -> Dict[str, bool]:
     """
-    Clone multiple repositories in parallel.
+    Clone multiple repositories in parallel with proper interrupt handling.
 
     Args:
         pkg_names: List of package names to clone
@@ -165,23 +186,41 @@ def clone_repositories(
     Returns:
         Dictionary mapping package names to clone success status
     """
+    global executor, futures_to_cancel
     results = {}
 
     os.makedirs(output_dir, exist_ok=True)
 
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {
-            executor.submit(clone_repository, pkg_name, output_dir): pkg_name
-            for pkg_name in pkg_names
-        }
+    executor = ThreadPoolExecutor(max_workers=max_workers)
+    futures_map = {}
 
-        for future in futures:
-            pkg_name = futures[future]
+    try:
+        for pkg_name in pkg_names:
+            future = executor.submit(clone_repository, pkg_name, output_dir)
+            futures_map[future] = pkg_name
+            futures_to_cancel.add(future)
+
+        for future, pkg_name in futures_map.items():
             try:
                 results[pkg_name] = future.result()
             except (subprocess.SubprocessError, OSError) as e:
                 print(f"Error when cloning {pkg_name}: {e}")
                 results[pkg_name] = False
+            finally:
+                if future in futures_to_cancel:
+                    futures_to_cancel.remove(future)
+    finally:
+        try:
+            if sys.version_info >= (3, 9):
+                executor.shutdown(wait=True, cancel_futures=True)
+            else:
+                # For Python 3.8 and earlier, manually cancel futures
+                for future in futures_to_cancel:
+                    future.cancel()
+                executor.shutdown(wait=True)
+        finally:
+            executor = None
+            futures_to_cancel.clear()
 
     return results
 
@@ -189,12 +228,10 @@ def clone_repositories(
 def main():
     """
     Main entry point for the repository cloning script.
-
-    Parses command line arguments, loads package mapping data, filters packages
-    based on Gentoo mappings and optional name filtering, and either performs
-    a dry run or clones the repositories in parallel. Provides a summary of
-    successful clones and failures upon completion.
     """
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+
     parser = argparse.ArgumentParser(
         description="Clone GitHub repositories from clearlinux-pkgs based on package mapping"
     )
