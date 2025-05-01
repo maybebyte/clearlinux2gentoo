@@ -21,7 +21,6 @@ Error: The 'portage' module could not be found.
 Are you running this script on something other than Gentoo?
 """
     sys.stderr.write(ERROR_MSG.strip() + "\n")
-    sys.exit(1)
 
 
 def get_packages() -> Dict[str, List[str]]:
@@ -32,16 +31,12 @@ def get_packages() -> Dict[str, List[str]]:
     """
     packages = defaultdict(list)
 
-    try:
-        all_packages = portage.db[portage.root]["porttree"].dbapi.cp_all()
+    all_packages = portage.db[portage.root]["porttree"].dbapi.cp_all()
 
-        for cp in all_packages:
-            if "/" in cp:
-                category, pkg = cp.split("/", 1)
-                packages[category].append(pkg)
-    except Exception as e:
-        print(f"Error accessing Portage database: {e}", file=sys.stderr)
-        sys.exit(1)
+    for cp in all_packages:
+        if "/" in cp:
+            category, pkg = cp.split("/", 1)
+            packages[category].append(pkg)
 
     return packages
 
@@ -55,14 +50,10 @@ def write_packages(packages: Dict[str, List[str]], output_file: str) -> None:
     """
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
-    try:
-        with open(output_file, "w", encoding="utf-8") as f:
-            for category, pkgs in sorted(packages.items()):
-                for pkg in sorted(pkgs):
-                    f.write(f"{category}/{pkg}\n")
-    except OSError as e:
-        print(f"Error writing to output file: {e}", file=sys.stderr)
-        sys.exit(1)
+    with open(output_file, "w", encoding="utf-8") as f:
+        for category, pkgs in sorted(packages.items()):
+            for pkg in sorted(pkgs):
+                f.write(f"{category}/{pkg}\n")
 
 
 def parse_arguments():
