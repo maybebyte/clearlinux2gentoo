@@ -231,7 +231,9 @@ def clone_repository(pkg_name: str, output_dir: str) -> bool:
 
         # Get default branch and checkout
         default_branch = determine_default_branch(repo_dir)
-        print(f"Using default branch: {default_branch} for {pkg_name}")
+        print(
+            f"Using default branch: {default_branch} for {pkg_name}",
+        )
 
         fetch_and_checkout(repo_dir, default_branch)
         return True
@@ -242,14 +244,18 @@ def clone_repository(pkg_name: str, output_dir: str) -> bool:
             if hasattr(e.stderr, "decode")
             else str(e.stderr)
         )
-        print(f"Failed to clone {pkg_name}: {stderr}")
+        print(f"Failed to clone {pkg_name}: {stderr}", file=sys.stderr)
         print(
-            f"Try checking your network connection or if the repository exists at {repo_url}"
+            f"Try checking your network connection or if the repository exists at {repo_url}",
+            file=sys.stderr,
         )
         return False
     except OSError as e:
-        print(f"OS error when cloning {pkg_name}: {e}")
-        print(f"Check if you have write permissions to {repo_dir}")
+        print(f"OS error when cloning {pkg_name}: {e}", file=sys.stderr)
+        print(
+            f"Check if you have write permissions to {repo_dir}",
+            file=sys.stderr,
+        )
         return False
 
 
@@ -289,7 +295,7 @@ def clone_repositories(
             try:
                 results[pkg_name] = future.result()
             except (subprocess.SubprocessError, OSError) as e:
-                print(f"Error when cloning {pkg_name}: {e}")
+                print(f"Error when cloning {pkg_name}: {e}", file=sys.stderr)
                 results[pkg_name] = False
             finally:
                 # Remove processed futures from the cancellation set
@@ -374,7 +380,9 @@ def filter_packages(
         for name, mapping in mapping_data.items()
         if mapping.get("gentoo_match")
     ]
-    print(f"Found {len(pkg_names)} packages with Gentoo mappings")
+    print(
+        f"Found {len(pkg_names)} packages with Gentoo mappings",
+    )
 
     # Apply additional substring filter if provided
     if filter_substring:
@@ -425,9 +433,11 @@ def main():
     # Report failures if any
     failed = [pkg_name for pkg_name, success in results.items() if not success]
     if failed:
-        print(f"\nFailed to clone {len(failed)} repositories:")
+        print(
+            f"\nFailed to clone {len(failed)} repositories:", file=sys.stderr
+        )
         for pkg_name in failed:
-            print(f"  {pkg_name}")
+            print(f"  {pkg_name}", file=sys.stderr)
 
 
 if __name__ == "__main__":
