@@ -83,7 +83,7 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def main() -> int:
+def main():
     """Entry point of the script, handles package extraction and writing.
 
     Returns:
@@ -94,12 +94,10 @@ def main() -> int:
     packages = get_packages()
     if not packages:
         print("Warning: No packages found to write", file=sys.stderr)
-        return 1
 
     write_packages(packages, args.output)
     print(f"Successfully wrote package list to {args.output}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
