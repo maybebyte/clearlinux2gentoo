@@ -13,10 +13,19 @@ appropriate Gentoo package.env entries based on mapping data.
 import argparse
 import configparser
 import json
+import logging
 import os
 import sys
 from typing import Dict, Union, List, Tuple, Optional
 
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()],
+)
+logger = logging.getLogger(__name__)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data")
@@ -74,19 +83,25 @@ def load_package_mapping(
         file_path: Path to the JSON mapping file
 
     Returns:
-        Dictionary mapping Clear Linux package names to Gentoo package information
+        Dictionary mapping Clear Linux package names to Gentoo package
+        information
+
+    Raises:
+        FileNotFoundError: If the mapping file doesn't exist
+        json.JSONDecodeError: If the JSON formatting is invalid
     """
     try:
         with open(file_path, "r", encoding="utf-8") as mapping_file:
             return json.load(mapping_file)
     except FileNotFoundError:
-        sys.stderr.write(f"Error: Mapping file '{file_path}' not found\n")
+        logger.error("Mapping file '%s' not found", file_path)
+        raise
     except json.JSONDecodeError as error:
-        sys.stderr.write(f"Error parsing JSON mapping file: {error}\n")
-    except Exception as error:
-        sys.stderr.write(f"Error loading mapping file: {error}\n")
-
-    return {}
+        logger.error("Error parsing JSON mapping file: %s", error)
+        raise
+    except IOError as error:
+        logger.error("IO error reading mapping file: %s", error)
+        raise
 
 
 def convert_value(value: str) -> Union[str, bool, int]:
@@ -120,6 +135,10 @@ def parse_options_conf(file_path: str) -> ConfigDict:
 
     Returns:
         Dictionary with sections and their key-value pairs
+
+    Raises:
+        FileNotFoundError: If the options.conf file doesn't exist
+        configparser.Error: If there's an error parsing the config file
     """
     result: ConfigDict = {}
 
@@ -130,7 +149,8 @@ def parse_options_conf(file_path: str) -> ConfigDict:
         )
         config.optionxform = str  # type: ignore
 
-        config.read(file_path)
+        with open(file_path, "r", encoding="utf-8") as config_file:
+            config.read_file(config_file)
 
         for section in config.sections():
             result[section] = {}
@@ -143,13 +163,14 @@ def parse_options_conf(file_path: str) -> ConfigDict:
         return result
 
     except configparser.Error as error:
-        sys.stderr.write(f"ConfigParser error in {file_path}: {error}\n")
+        logger.error("ConfigParser error in %s: %s", file_path, error)
+        raise
     except FileNotFoundError:
-        sys.stderr.write(f"Error: File '{file_path}' not found\n")
-    except Exception as error:
-        sys.stderr.write(f"Error processing file {file_path}: {error}\n")
-
-    return {}
+        logger.error("File '%s' not found", file_path)
+        raise
+    except IOError as error:
+        logger.error("IO error reading %s: %s", file_path, error)
+        raise
 
 
 def ensure_directory_exists(directory_path: str) -> bool:
@@ -160,16 +181,27 @@ def ensure_directory_exists(directory_path: str) -> bool:
         directory_path: Path to the directory to create
 
     Returns:
-        True if directory exists or was created, False otherwise
+        True if directory exists or was created
+
+    Raises:
+        PermissionError: If there are permission issues creating the directory
+        OSError: If there are other OS-related errors
     """
     try:
         os.makedirs(directory_path, exist_ok=True)
         return True
-    except Exception as error:
-        sys.stderr.write(
-            f"Error creating directory {directory_path}: {error}\n"
+    except PermissionError as error:
+        logger.error(
+            "Permission denied creating directory %s: %s",
+            directory_path,
+            error,
         )
-        return False
+        raise
+    except OSError as error:
+        logger.error(
+            "OS error creating directory %s: %s", directory_path, error
+        )
+        raise
 
 
 def get_compiler_configs() -> CompilerConfigFiles:
@@ -236,24 +268,30 @@ def write_compiler_configs(target_dir: str) -> bool:
 
     Returns:
         True if all files were written successfully, False otherwise
-    """
-    if not ensure_directory_exists(target_dir):
-        return False
 
+    Raises:
+        PermissionError: If there are permission issues writing files
+        IOError: If there are IO errors during file operations
+    """
+    ensure_directory_exists(target_dir)
     config_files = get_compiler_configs()
 
-    success = True
     for filename, lines in config_files.items():
         file_path = os.path.join(target_dir, filename)
         try:
             with open(file_path, "w", encoding="utf-8") as config_file:
                 for line in lines:
                     config_file.write(f"{line}\n")
-        except Exception as error:
-            sys.stderr.write(f"Error writing {file_path}: {error}\n")
-            success = False
+        except PermissionError as error:
+            logger.error(
+                "Permission denied writing to %s: %s", file_path, error
+            )
+            return False
+        except IOError as error:
+            logger.error("IO error writing to %s: %s", file_path, error)
+            return False
 
-    return success
+    return True
 
 
 def find_options_conf_files(base_dir: str) -> List[str]:
@@ -265,6 +303,10 @@ def find_options_conf_files(base_dir: str) -> List[str]:
 
     Returns:
         List of paths to options.conf files
+
+    Raises:
+        FileNotFoundError: If the base directory doesn't exist
+        PermissionError: If there are permission issues accessing directories
     """
     options_conf_files = []
 
@@ -272,15 +314,22 @@ def find_options_conf_files(base_dir: str) -> List[str]:
         for root, _, files in os.walk(base_dir):
             if "options.conf" in files:
                 options_conf_files.append(os.path.join(root, "options.conf"))
-    except Exception as error:
-        sys.stderr.write(f"Error searching for options.conf files: {error}\n")
-
-    return options_conf_files
+        return options_conf_files
+    except FileNotFoundError:
+        logger.error("Base directory not found: %s", base_dir)
+        raise
+    except PermissionError as error:
+        logger.error("Permission denied accessing %s: %s", base_dir, error)
+        raise
+    except OSError as error:
+        logger.error("OS error searching for options.conf files: %s", error)
+        raise
 
 
 def get_flag_mappings() -> FlagMapping:
     """
-    Define mappings between Clear Linux build flags and Gentoo configuration files.
+    Define mappings between Clear Linux build flags and Gentoo configuration
+    files.
 
     Returns:
         List of tuples: (flag_name, output_filename, config_file, invert_flag)
@@ -300,60 +349,6 @@ def get_flag_mappings() -> FlagMapping:
     ]
 
 
-def process_package_env_entries(
-    options_conf_path: str,
-    pkg_mapping: GentooPackageMapping,
-    package_env_dir: str,
-) -> bool:
-    """
-    Process an options.conf file and create package.env entries for Gentoo.
-
-    Args:
-        options_conf_path: Path to the options.conf file
-        pkg_mapping: Dictionary mapping Clear Linux package names to Gentoo package info
-        package_env_dir: Directory to store the generated package.env files
-
-    Returns:
-        True if processing was successful, False otherwise
-    """
-    try:
-        config = parse_options_conf(options_conf_path)
-
-        if not config or "package" not in config or "autospec" not in config:
-            sys.stderr.write(
-                f"Invalid config structure in {options_conf_path}\n"
-            )
-            return False
-
-        clear_pkg_name = config["package"].get("name", "")
-        if not clear_pkg_name:
-            sys.stderr.write(f"No package name found in {options_conf_path}\n")
-            return False
-
-        gentoo_pkg_name = get_gentoo_package_name(clear_pkg_name, pkg_mapping)
-        if not gentoo_pkg_name:
-            return False
-
-        ensure_directory_exists(package_env_dir)
-
-        for flag, filename, conf_file, invert in get_flag_mappings():
-            flag_value = config["autospec"].get(flag, False)
-            if invert:
-                flag_value = not flag_value
-
-            if flag_value:
-                file_path = os.path.join(package_env_dir, filename)
-
-                with open(file_path, "a", encoding="utf-8") as env_file:
-                    env_file.write(f"{gentoo_pkg_name} {conf_file}\n")
-
-        return True
-
-    except Exception as error:
-        sys.stderr.write(f"Error processing {options_conf_path}: {error}\n")
-        return False
-
-
 def get_gentoo_package_name(
     clear_pkg_name: Union[str, int, bool], pkg_mapping: GentooPackageMapping
 ) -> Optional[str]:
@@ -370,17 +365,81 @@ def get_gentoo_package_name(
     clear_pkg_str = str(clear_pkg_name)
 
     if clear_pkg_str not in pkg_mapping:
-        sys.stderr.write(f"No mapping found for package: {clear_pkg_str}\n")
+        logger.warning("No mapping found for package: %s", clear_pkg_str)
         return None
 
     gentoo_pkg_info = pkg_mapping[clear_pkg_str]
     gentoo_pkg_name = gentoo_pkg_info.get("gentoo_match", "")
 
     if not gentoo_pkg_name:
-        sys.stderr.write(f"No Gentoo package match for: {clear_pkg_str}\n")
+        logger.warning("No Gentoo package match for: %s", clear_pkg_str)
         return None
 
     return gentoo_pkg_name
+
+
+def process_package_env_entries(
+    options_conf_path: str,
+    pkg_mapping: GentooPackageMapping,
+    package_env_dir: str,
+) -> bool:
+    """
+    Process an options.conf file and create package.env entries for Gentoo.
+
+    Args:
+        options_conf_path: Path to the options.conf file
+        pkg_mapping: Dictionary mapping Clear Linux package names to Gentoo
+        package info
+        package_env_dir: Directory to store the generated package.env files
+
+    Returns:
+        True if processing was successful, False otherwise
+    """
+    try:
+        config = parse_options_conf(options_conf_path)
+
+        if not config or "package" not in config or "autospec" not in config:
+            logger.error("Invalid config structure in %s", options_conf_path)
+            return False
+
+        clear_pkg_name = config["package"].get("name", "")
+        if not clear_pkg_name:
+            logger.error("No package name found in %s", options_conf_path)
+            return False
+
+        gentoo_pkg_name = get_gentoo_package_name(clear_pkg_name, pkg_mapping)
+        if not gentoo_pkg_name:
+            return False
+
+        ensure_directory_exists(package_env_dir)
+
+        for flag, filename, conf_file, invert in get_flag_mappings():
+            flag_value = config["autospec"].get(flag, False)
+            if invert:
+                flag_value = not flag_value
+
+            if flag_value:
+                file_path = os.path.join(package_env_dir, filename)
+                try:
+                    with open(file_path, "a", encoding="utf-8") as env_file:
+                        env_file.write(f"{gentoo_pkg_name} {conf_file}\n")
+                except IOError as error:
+                    logger.error("Error writing to %s: %s", file_path, error)
+                    return False
+
+        return True
+
+    except configparser.Error as error:
+        logger.error(
+            "Config parsing error for %s: %s", options_conf_path, error
+        )
+        return False
+    except FileNotFoundError:
+        logger.error("File not found: %s", options_conf_path)
+        return False
+    except IOError as error:
+        logger.error("IO error processing %s: %s", options_conf_path, error)
+        return False
 
 
 def clear_package_env_files(package_env_dir: str) -> bool:
@@ -394,22 +453,29 @@ def clear_package_env_files(package_env_dir: str) -> bool:
         True if files were cleared successfully, False otherwise
     """
     try:
-        if not os.path.exists(package_env_dir):
-            ensure_directory_exists(package_env_dir)
-            return True
+        ensure_directory_exists(package_env_dir)
 
         flag_mappings = get_flag_mappings()
         filenames = set(mapping[1] for mapping in flag_mappings)
 
         for filename in filenames:
             file_path = os.path.join(package_env_dir, filename)
-            with open(file_path, "w", encoding="utf-8"):
-                pass
+            try:
+                with open(file_path, "w", encoding="utf-8"):
+                    pass
+            except IOError as error:
+                logger.error("Error clearing file %s: %s", file_path, error)
+                return False
 
         return True
 
-    except Exception as error:
-        sys.stderr.write(f"Error clearing package.env files: {error}\n")
+    except PermissionError as error:
+        logger.error(
+            "Permission denied accessing %s: %s", package_env_dir, error
+        )
+        return False
+    except OSError as error:
+        logger.error("OS error clearing package.env files: %s", error)
         return False
 
 
@@ -424,33 +490,48 @@ def main():
     """
     args = parse_args()
 
-    if not write_compiler_configs(args.portage_env_dir):
-        sys.stderr.write(
-            "Failed to create some compiler configuration files\n"
+    try:
+        # Create compiler configuration files
+        if not write_compiler_configs(args.portage_env_dir):
+            logger.error("Failed to create compiler configuration files")
+            sys.exit(1)
+
+        # Load package mapping data
+        try:
+            pkg_mapping = load_package_mapping(args.mapping_file)
+        except (FileNotFoundError, json.JSONDecodeError, IOError) as error:
+            logger.error("Failed to load package mapping data: %s", error)
+            sys.exit(1)
+
+        # Find options.conf files
+        try:
+            options_conf_files = find_options_conf_files(args.repos_dir)
+        except (FileNotFoundError, PermissionError, OSError) as error:
+            logger.error("Failed to find options.conf files: %s", error)
+            sys.exit(1)
+
+        # Clear package.env files
+        if not clear_package_env_files(args.package_env_dir):
+            logger.error("Failed to clear package.env files")
+            sys.exit(1)
+
+        # Process options.conf files
+        processed_count = 0
+        for options_conf_path in options_conf_files:
+            if process_package_env_entries(
+                options_conf_path, pkg_mapping, args.package_env_dir
+            ):
+                processed_count += 1
+
+        logger.info(
+            "Successfully processed %d out of %d options.conf files",
+            processed_count,
+            len(options_conf_files),
         )
-        sys.exit(1)
 
-    pkg_mapping = load_package_mapping(args.mapping_file)
-    if not pkg_mapping:
-        sys.stderr.write("Failed to load package mapping data\n")
-        sys.exit(1)
-
-    options_conf_files = find_options_conf_files(args.repos_dir)
-
-    if not clear_package_env_files(args.package_env_dir):
-        sys.stderr.write("Failed to clear package.env files\n")
-        sys.exit(1)
-
-    processed_count = 0
-    for options_conf_path in options_conf_files:
-        if process_package_env_entries(
-            options_conf_path, pkg_mapping, args.package_env_dir
-        ):
-            processed_count += 1
-
-    print(
-        f"Successfully processed {processed_count} out of {len(options_conf_files)} options.conf files"
-    )
+    except KeyboardInterrupt:
+        logger.info("Operation interrupted by user")
+        sys.exit(130)
 
 
 if __name__ == "__main__":
