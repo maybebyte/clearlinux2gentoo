@@ -6,7 +6,7 @@
   writing code without direction leads to technical debt fast. That isn't
   so fun to manage.
 
-- Move slowly at a sustainable pace. Moving fast does indeed get things
+- Move at a sustainable pace. Moving fast does indeed get things
   done fast, especially with AI assistance, but it also becomes
   unmanageable just as quick.
 
